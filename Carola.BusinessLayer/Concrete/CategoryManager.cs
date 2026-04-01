@@ -25,7 +25,7 @@ public class CategoryManager:ICategoryService
 
     public async Task TDeleteAsync(int id)
     {
-        
+        throw new NotImplementedException();
     }
 
     public Task<List<Category>> TGetAllAsync()
