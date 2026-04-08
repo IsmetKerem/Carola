@@ -1,31 +1,13 @@
-using Carola.EntityLayer.Entities;
+﻿using Carola.EntityLayer.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Carola.BusinessLayer.Abstract;
-
-public interface IReservationService:IGenericService<Reservation>
+namespace Carola.BusinessLayer.Abstract
 {
-    public Task TInsertAsync(Reservation entity)
+    public interface IReservationService : IGenericService<Reservation>
     {
-        throw new NotImplementedException();
-    }
-
-    public Task TUpdateAsync(Reservation entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task TDeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Reservation>> TGetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Reservation> TGetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
     }
 }

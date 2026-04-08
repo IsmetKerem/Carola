@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Carola.EntityLayer\Carola.EntityLayer.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Carola.EntityLayer\Carola.EntityLayer.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="UnitOfWork\" />
-    </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UnitOfWork\" />
+  </ItemGroup>
 
 </Project>

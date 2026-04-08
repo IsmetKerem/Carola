@@ -1,31 +1,13 @@
-using Carola.EntityLayer.Entities;
+﻿using Carola.EntityLayer.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Carola.BusinessLayer.Abstract;
-
-public interface ICategoryService:IGenericService<Category>
+namespace Carola.BusinessLayer.Abstract
 {
-    public Task TInsertAsync(Category entity)
+    public interface ICategoryService : IGenericService<Category>
     {
-        throw new NotImplementedException();
-    }
-
-    public Task TUpdateAsync(Category entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task TDeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Category>> TGetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Category> TGetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
     }
 }

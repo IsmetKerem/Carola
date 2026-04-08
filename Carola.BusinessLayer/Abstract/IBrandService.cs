@@ -1,31 +1,13 @@
-using Carola.EntityLayer.Entities;
+﻿using Carola.EntityLayer.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Carola.BusinessLayer.Abstract;
-
-public interface IBrandService:IGenericService<Brand>
+namespace Carola.BusinessLayer.Abstract
 {
-    public Task TInsertAsync(Brand entity)
+    public interface IBrandService : IGenericService<Brand>
     {
-        throw new NotImplementedException();
-    }
-
-    public Task TUpdateAsync(Brand entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task TDeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Brand>> TGetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Brand> TGetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
     }
 }

@@ -1,10 +1,17 @@
-namespace Carola.BusinessLayer.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public interface IGenericService<T> where T: class
+namespace Carola.BusinessLayer.Abstract
 {
-    Task TInsertAsync (T entity);
-    Task TUpdateAsync  (T entity);
-    Task TDeleteAsync  (int id);
-    Task <List<T>> TGetAllAsync();
-    Task<T> TGetByIdAsync(int id);
-}
+    public interface IGenericService<T> where T : class
+    {
+        Task TInsertAsync(T entity);
+        Task TUpdateAsync(T entity);
+        Task TDeleteAsync(int id);
+        Task<List<T>> TGetAllAsync();
+        Task<T> TGetByIdAsync(int id);
+    }
+} 

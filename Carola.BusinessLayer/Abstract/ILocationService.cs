@@ -1,31 +1,14 @@
-using Carola.EntityLayer.Entities;
+﻿using Carola.EntityLayer.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Carola.BusinessLayer.Abstract;
-
-public interface ILocationService:IGenericService<Location>
+namespace Carola.BusinessLayer.Abstract
 {
-    public Task TInsertAsync(Location entity)
+    public interface ILocationService : IGenericService<Location>
     {
-        throw new NotImplementedException();
-    }
-
-    public Task TUpdateAsync(Location entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task TDeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Location>> TGetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Location> TGetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
+        
     }
 }

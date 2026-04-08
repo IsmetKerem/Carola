@@ -1,31 +1,14 @@
-using Carola.EntityLayer.Entities;
+﻿using Carola.EntityLayer.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Carola.BusinessLayer.Abstract;
-
-public interface ICarService:IGenericService<Car>
+namespace Carola.BusinessLayer.Abstract
 {
-    public Task TInsertAsync(Car entity)
+    public interface ICarService : IGenericService<Car>
     {
-        throw new NotImplementedException();
-    }
-
-    public Task TUpdateAsync(Car entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task TDeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<Car>> TGetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Car> TGetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
+        Task<List<Car>> TGetAllCarsWithCategoryAsync();
     }
 }
