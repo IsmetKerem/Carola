@@ -1,8 +1,31 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<Carola.DtoLayer.BrandDtos.ResultBrandDto>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <h1>🎉 Carola Brand Test</h1>
+    <p>Eğer aşağıda markalar listeleniyorsa, katmanlı mimari çalışıyor demektir!</p>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Marka Adı</th>
+            <th>Logo</th>
+            <th>Öne Çıkan</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var brand in Model)
+        {
+            <tr>
+                <td>@brand.BrandId</td>
+                <td>@brand.BrandName</td>
+                <td>@brand.LogoUrl</td>
+                <td>@(brand.Status ? "✅" : "❌")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <hr/>
+    <p>Toplam @Model.Count öne çıkan marka bulundu.</p>
 </div>

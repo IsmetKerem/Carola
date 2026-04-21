@@ -1,51 +1,44 @@
-﻿using Carola.BusinessLayer.Abstract;
-using Carola.DataAccessLayer.Abstract;
-using Carola.EntityLayer.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
+using Carola.BusinessLayer.Abstract;
+using Carola.DataAccessLayer.Repositories.BrandRepository;
+using Carola.DtoLayer.BrandDtos;
+using Carola.EntityLayer.Entities;
 
 namespace Carola.BusinessLayer.Concrete
 {
-    public class BrandManager : IBrandService
+    public class BrandManager : GenericManager<ResultBrandDto, Brand>, IBrandService
     {
         private readonly IBrandDal _brandDal;
-        public BrandManager(IBrandDal brandDal)
+        private readonly IMapper _mapper;
+
+        public BrandManager(IBrandDal brandDal, IMapper mapper) : base(brandDal, mapper)
         {
             _brandDal = brandDal;
+            _mapper = mapper;
         }
-        public async Task TDeleteAsync(int id)
+
+        public async Task<List<ResultBrandDto>> TGetFeaturedBrandsAsync()
         {
-            await _brandDal.DeleteAsync(id);
+            var brands = await _brandDal.GetFeaturedBrandsAsync();
+            return _mapper.Map<List<ResultBrandDto>>(brands);
         }
-        public async Task<List<Brand>> TGetAllAsync()
+
+        public async Task TCreateBrandAsync(CreateBrandDto dto)
         {
-            return await _brandDal.GetAllAsync();
-        }
-        public async Task<Brand> TGetByIdAsync(int id)
-        {
-            return await _brandDal.GetByIdAsync(id);
-        }
-        public async Task TInsertAsync(Brand entity)
-        {
-            if (string.IsNullOrWhiteSpace(entity.BrandName))
-                throw new Exception("Marka adı boş olamaz");
-
-            if (entity.BrandName.Length < 2)
-                throw new Exception("Marka adı en az 3 karakter olmalıdır");
-
-            var brands = await _brandDal.GetAllAsync();
-
-            if (brands.Any(x => x.BrandName == entity.BrandName))
-                throw new Exception("Bu marka zaten mevcut");
-
+            var entity = _mapper.Map<Brand>(dto);
             await _brandDal.InsertAsync(entity);
         }
-        public async Task TUpdateAsync(Brand entity)
+
+        public async Task TUpdateBrandAsync(UpdateBrandDto dto)
         {
+            var entity = _mapper.Map<Brand>(dto);
             await _brandDal.UpdateAsync(entity);
+        }
+
+        public async Task<GetByIdBrandDto?> TGetByIdDtoAsync(int id)
+        {
+            var brand = await _brandDal.GetByIdAsync(id);
+            return brand == null ? null : _mapper.Map<GetByIdBrandDto>(brand);
         }
     }
 }

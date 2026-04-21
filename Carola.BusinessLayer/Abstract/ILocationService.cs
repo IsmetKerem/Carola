@@ -1,14 +1,11 @@
-﻿using Carola.EntityLayer.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Carola.DtoLayer.LocationDtos;
 
 namespace Carola.BusinessLayer.Abstract
 {
-    public interface ILocationService : IGenericService<Location>
+    public interface ILocationService : IGenericService<ResultLocationDto>
     {
-        
+        Task TCreateLocationAsync(CreateLocationDto dto);
+        Task TUpdateLocationAsync(UpdateLocationDto dto);
+        Task<GetByIdLocationDto?> TGetByIdDtoAsync(int id);
     }
 }

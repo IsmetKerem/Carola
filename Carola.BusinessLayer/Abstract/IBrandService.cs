@@ -1,13 +1,12 @@
-﻿using Carola.EntityLayer.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Carola.DtoLayer.BrandDtos;
 
 namespace Carola.BusinessLayer.Abstract
 {
-    public interface IBrandService : IGenericService<Brand>
+    public interface IBrandService : IGenericService<ResultBrandDto>
     {
+        Task<List<ResultBrandDto>> TGetFeaturedBrandsAsync();
+        Task TCreateBrandAsync(CreateBrandDto dto);
+        Task TUpdateBrandAsync(UpdateBrandDto dto);
+        Task<GetByIdBrandDto?> TGetByIdDtoAsync(int id);
     }
 }

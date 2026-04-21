@@ -1,13 +1,13 @@
-﻿using Carola.EntityLayer.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Carola.DtoLayer.CustomerDtos;
 
 namespace Carola.BusinessLayer.Abstract
 {
-    public interface ICustomerService : IGenericService<Customer>
+    public interface ICustomerService : IGenericService<ResultCustomerDto>
     {
+        Task<ResultCustomerDto?> TGetCustomerByEmailAsync(string email);
+        Task<ResultCustomerDto?> TGetCustomerByLicenseNumberAsync(string licenseNumber);
+        Task<int> TCreateCustomerAndReturnIdAsync(CreateCustomerDto dto);
+        Task TUpdateCustomerAsync(UpdateCustomerDto dto);
+        Task<GetByIdCustomerDto?> TGetByIdDtoAsync(int id);
     }
 }

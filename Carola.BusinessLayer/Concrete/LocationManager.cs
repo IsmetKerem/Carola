@@ -1,40 +1,38 @@
+using AutoMapper;
 using Carola.BusinessLayer.Abstract;
-using Carola.DataAccessLayer.Abstract;
-using Carola.EntityLayer.Entites;
+using Carola.DataAccessLayer.Repositories.LocationRepository;
+using Carola.DtoLayer.LocationDtos;
+using Carola.EntityLayer.Entities;
 
-namespace Carola.BusinessLayer.Concrete;
-
-public class LocationManager: ILocationService
+namespace Carola.BusinessLayer.Concrete
 {
-    private readonly ILocationDal _locationDal;
-
-    public LocationManager(ILocationDal locationDal)
+    public class LocationManager : GenericManager<ResultLocationDto, Location>, ILocationService
     {
-        _locationDal = locationDal;
-    }
+        private readonly ILocationDal _locationDal;
+        private readonly IMapper _mapper;
 
-    public async Task TInsertAsync(Location entity)
-    {
-        await _locationDal.InsertAsync(entity);
-    }
+        public LocationManager(ILocationDal locationDal, IMapper mapper) : base(locationDal, mapper)
+        {
+            _locationDal = locationDal;
+            _mapper = mapper;
+        }
 
-    public async Task TUpdateAsync(Location entity)
-    {
-        await _locationDal.UpdateAsync(entity);
-    }
+        public async Task TCreateLocationAsync(CreateLocationDto dto)
+        {
+            var entity = _mapper.Map<Location>(dto);
+            await _locationDal.InsertAsync(entity);
+        }
 
-    public async Task TDeleteAsync(int id)
-    {
-        await _locationDal.DeleteAsync(id);
-    }
+        public async Task TUpdateLocationAsync(UpdateLocationDto dto)
+        {
+            var entity = _mapper.Map<Location>(dto);
+            await _locationDal.UpdateAsync(entity);
+        }
 
-    public async Task<List<Location>> TGetAllAsync()
-    {
-        return await _locationDal.GetAllAsync();
-    }
-
-    public async Task<Location> TGetByIdAsync(int id)
-    {
-        return await _locationDal.GetByIdAsync(id);
+        public async Task<GetByIdLocationDto?> TGetByIdDtoAsync(int id)
+        {
+            var entity = await _locationDal.GetByIdAsync(id);
+            return entity == null ? null : _mapper.Map<GetByIdLocationDto>(entity);
+        }
     }
 }

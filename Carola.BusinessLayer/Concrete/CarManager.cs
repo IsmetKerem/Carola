@@ -1,50 +1,55 @@
-﻿using Carola.BusinessLayer.Abstract;
-using Carola.DataAccessLayer.Abstract;
-using Carola.EntityLayer.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
+using Carola.BusinessLayer.Abstract;
+using Carola.DataAccessLayer.Repositories.CarRepository;
+using Carola.DtoLayer.CarDtos;
+using Carola.EntityLayer.Entities;
 
 namespace Carola.BusinessLayer.Concrete
 {
-    public class CarManager : ICarService
+    public class CarManager : GenericManager<ResultCarDto, Car>, ICarService
     {
         private readonly ICarDal _carDal;
+        private readonly IMapper _mapper;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal, IMapper mapper) : base(carDal, mapper)
         {
             _carDal = carDal;
+            _mapper = mapper;
         }
 
-        public async Task TDeleteAsync(int id)
+        public async Task<List<ResultCarDto>> TGetCarsWithBrandAndCategoryAsync()
         {
-            await _carDal.DeleteAsync(id);
+            var cars = await _carDal.GetCarsWithBrandAndCategoryAsync();
+            return _mapper.Map<List<ResultCarDto>>(cars);
         }
 
-        public async Task<List<Car>> TGetAllAsync()
+        public async Task<List<ResultCarDto>> TGetLast6CarsAsync()
         {
-            return await _carDal.GetAllAsync();
+            var cars = await _carDal.GetLast6CarsAsync();
+            return _mapper.Map<List<ResultCarDto>>(cars);
         }
 
-        public async Task<List<Car>> TGetAllCarsWithCategoryAsync()
+        public async Task<GetByIdCarDto?> TGetCarByIdWithDetailsAsync(int id)
         {
-            return await _carDal.GetAllCarsWithCategoryAsync();
+            var car = await _carDal.GetCarByIdWithDetailsAsync(id);
+            return car == null ? null : _mapper.Map<GetByIdCarDto>(car);
         }
 
-        public async Task<Car> TGetByIdAsync(int id)
+        public async Task<List<ResultCarDto>> TGetAvailableCarsBetweenDatesAsync(DateTime start, DateTime end)
         {
-            return await _carDal.GetByIdAsync(id);
+            var cars = await _carDal.GetAvailableCarsBetweenDatesAsync(start, end);
+            return _mapper.Map<List<ResultCarDto>>(cars);
         }
 
-        public async Task TInsertAsync(Car entity)
+        public async Task TCreateCarAsync(CreateCarDto dto)
         {
+            var entity = _mapper.Map<Car>(dto);
             await _carDal.InsertAsync(entity);
         }
 
-        public async Task TUpdateAsync(Car entity)
+        public async Task TUpdateCarAsync(UpdateCarDto dto)
         {
+            var entity = _mapper.Map<Car>(dto);
             await _carDal.UpdateAsync(entity);
         }
     }

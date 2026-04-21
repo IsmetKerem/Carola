@@ -1,14 +1,14 @@
-﻿using Carola.EntityLayer.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Carola.DtoLayer.CarDtos;
 
 namespace Carola.BusinessLayer.Abstract
 {
-    public interface ICarService : IGenericService<Car>
+    public interface ICarService : IGenericService<ResultCarDto>
     {
-        Task<List<Car>> TGetAllCarsWithCategoryAsync();
+        Task<List<ResultCarDto>> TGetCarsWithBrandAndCategoryAsync();
+        Task<List<ResultCarDto>> TGetLast6CarsAsync();
+        Task<GetByIdCarDto?> TGetCarByIdWithDetailsAsync(int id);
+        Task<List<ResultCarDto>> TGetAvailableCarsBetweenDatesAsync(DateTime start, DateTime end);
+        Task TCreateCarAsync(CreateCarDto dto);
+        Task TUpdateCarAsync(UpdateCarDto dto);
     }
 }
