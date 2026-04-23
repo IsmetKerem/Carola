@@ -1,0 +1,80 @@
+@model List<Carola.DtoLayer.ContactDtos.ResultContactDto>
+@{
+    ViewData["Title"] = "Mesaj Yönetimi";
+    var unreadCount = Model.Count(m => !m.IsRead);
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h5 class="data-card-title">
+            Mesajlar (@Model.Count)
+            @if (unreadCount > 0)
+            {
+                <span class="status-badge pending ms-2">@unreadCount yeni</span>
+            }
+        </h5>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Durum</th>
+                    <th>Gönderen</th>
+                    <th>Email</th>
+                    <th>Konu</th>
+                    <th>Tarih</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-4">Mesaj bulunmuyor.</td></tr>
+                }
+                @foreach (var msg in Model)
+                {
+                    <tr style="@(!msg.IsRead ? "background:#fef3c7" : "")">
+                        <td>
+                            @if (msg.IsRead)
+                            {
+                                <i class="bi bi-envelope-open text-muted" title="Okundu"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-envelope-fill text-warning" title="Okunmadı"></i>
+                            }
+                        </td>
+                        <td><strong>@msg.FullName</strong></td>
+                        <td><a href="mailto:@msg.Email" class="text-decoration-none">@msg.Email</a></td>
+                        <td>@msg.Subject</td>
+                        <td class="text-muted small">@msg.SendDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td class="text-end">
+                            <a asp-action="Detail" asp-route-id="@msg.ContactId" class="btn-icon text-primary" title="Görüntüle">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            @if (!msg.IsRead)
+                            {
+                                <a asp-action="MarkAsRead" asp-route-id="@msg.ContactId" class="btn-icon text-success" title="Okundu olarak işaretle">
+                                    <i class="bi bi-check2-all"></i>
+                                </a>
+                            }
+                            <a asp-action="Delete" asp-route-id="@msg.ContactId" class="btn-icon text-danger" title="Sil"
+                               onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+@model List<Carola.DtoLayer.CategoryDtos.ResultCategoryDto>
+@{
+    ViewData["Title"] = "Kategori Yönetimi";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h5 class="data-card-title">Kategoriler (@Model.Count)</h5>
+        <a asp-action="Create" class="btn-primary-action">
+            <i class="bi bi-plus-lg"></i> Yeni Kategori
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Görsel</th>
+                    <th>Kategori Adı</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.CategoryId</td>
+                        <td>
+                            <img src="@item.CategoryImage" alt="@item.CategoryName"
+                                 onerror="this.style.display='none'"
+                                 style="width:40px;height:40px;object-fit:contain;background:#f3f4f6;border-radius:6px;padding:4px" />
+                        </td>
+                        <td><strong>@item.CategoryName</strong></td>
+                        <td class="text-end">
+                            <a asp-action="Update" asp-route-id="@item.CategoryId" class="btn-icon text-primary" title="Düzenle">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn-icon text-danger" title="Sil"
+                               onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

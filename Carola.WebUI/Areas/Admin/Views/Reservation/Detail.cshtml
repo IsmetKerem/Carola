@@ -1,0 +1,112 @@
+@model Carola.DtoLayer.ReservationDtos.GetByIdReservationDto
+@using Carola.EntityLayer.Enums
+@{
+    ViewData["Title"] = $"Rezervasyon #{Model.ReservationId}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Rezervasyon Detayı</h4>
+    <a asp-action="Index" class="btn btn-link text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Listeye Dön
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="data-card">
+            <div class="data-card-header">
+                <h5 class="data-card-title">Rezervasyon #@Model.ReservationId</h5>
+                @switch (Model.Status)
+                {
+                    case ReservationStatus.Pending:
+                        <span class="status-badge pending">Onay Bekliyor</span>
+                        break;
+                    case ReservationStatus.Approved:
+                        <span class="status-badge active">Onaylandı</span>
+                        break;
+                    case ReservationStatus.Rejected:
+                        <span class="status-badge inactive">Reddedildi</span>
+                        break;
+                }
+            </div>
+
+            <div class="p-4">
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Alış Tarihi:</div>
+                    <div class="col-sm-8"><strong>@Model.PickupDate.ToString("dd MMMM yyyy")</strong></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">İade Tarihi:</div>
+                    <div class="col-sm-8"><strong>@Model.ReturnDate.ToString("dd MMMM yyyy")</strong></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Süre:</div>
+                    <div class="col-sm-8">@((Model.ReturnDate - Model.PickupDate).Days) gün</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Toplam Tutar:</div>
+                    <div class="col-sm-8"><h4 class="mb-0 text-primary">@Model.TotalPrice.ToString("N2") ₺</h4></div>
+                </div>
+                <hr/>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Oluşturulma:</div>
+                    <div class="col-sm-8">@Model.CreatedDate.ToString("dd MMMM yyyy, HH:mm")</div>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Açıklama:</div>
+                        <div class="col-sm-8" style="white-space:pre-wrap">@Model.Description</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        @if (Model.Status == ReservationStatus.Pending)
+        {
+            <div class="data-card">
+                <div class="data-card-header">
+                    <h5 class="data-card-title">İşlemler</h5>
+                </div>
+                <div class="p-4 d-grid gap-2">
+                    <a asp-action="Approve" asp-route-id="@Model.ReservationId"
+                       class="btn btn-success"
+                       onclick="return confirm('Onaylayıp müşteriye mail göndermek istediğinize emin misiniz?')">
+                        <i class="bi bi-check-lg"></i> Onayla & Müşteriye Bildir
+                    </a>
+                    <a asp-action="Reject" asp-route-id="@Model.ReservationId"
+                       class="btn btn-outline-danger"
+                       onclick="return confirm('Bu rezervasyonu reddetmek istediğinize emin misiniz?')">
+                        <i class="bi bi-x-lg"></i> Reddet
+                    </a>
+                </div>
+            </div>
+        }
+
+        <div class="data-card mt-3">
+            <div class="data-card-header">
+                <h5 class="data-card-title">Bağlantılı Kayıtlar</h5>
+            </div>
+            <div class="p-4">
+                <div class="mb-2">
+                    <small class="text-muted">Araç ID:</small>
+                    <a asp-controller="Car" asp-action="Update" asp-route-id="@Model.CarId" class="d-block">#@Model.CarId</a>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted">Müşteri ID:</small>
+                    <span class="d-block">#@Model.CustomerId</span>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted">Alış Lokasyonu ID:</small>
+                    <a asp-controller="Location" asp-action="Update" asp-route-id="@Model.PickupLocationId" class="d-block">#@Model.PickupLocationId</a>
+                </div>
+                <div>
+                    <small class="text-muted">İade Lokasyonu ID:</small>
+                    <a asp-controller="Location" asp-action="Update" asp-route-id="@Model.ReturnLocationId" class="d-block">#@Model.ReturnLocationId</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+@model Carola.WebUI.Areas.Admin.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row g-4 mb-4">
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon primary"><i class="bi bi-car-front"></i></div>
+            <div class="stat-card-value">@Model.TotalCars</div>
+            <div class="stat-card-label">Toplam Araç</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon success"><i class="bi bi-calendar-check"></i></div>
+            <div class="stat-card-value">@Model.TotalReservations</div>
+            <div class="stat-card-label">Toplam Rezervasyon</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon warning"><i class="bi bi-clock-history"></i></div>
+            <div class="stat-card-value">@Model.PendingReservations</div>
+            <div class="stat-card-label">Onay Bekleyen</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon danger"><i class="bi bi-envelope-exclamation"></i></div>
+            <div class="stat-card-value">@Model.UnreadMessages</div>
+            <div class="stat-card-label">Okunmamış Mesaj</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon info"><i class="bi bi-tag"></i></div>
+            <div class="stat-card-value">@Model.TotalBrands</div>
+            <div class="stat-card-label">Marka</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon info"><i class="bi bi-grid"></i></div>
+            <div class="stat-card-value">@Model.TotalCategories</div>
+            <div class="stat-card-label">Kategori</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon info"><i class="bi bi-geo-alt"></i></div>
+            <div class="stat-card-value">@Model.TotalLocations</div>
+            <div class="stat-card-label">Lokasyon</div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-card-icon primary"><i class="bi bi-people"></i></div>
+            <div class="stat-card-value">@Model.TotalCustomers</div>
+            <div class="stat-card-label">Müşteri</div>
+        </div>
+    </div>
+
+</div>
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h5 class="data-card-title">Hoş Geldiniz</h5>
+    </div>
+    <div class="p-4">
+        <p class="mb-2">Carola Admin paneline hoş geldiniz, <strong>@User.Identity?.Name</strong> 👋</p>
+        <p class="text-muted small mb-0">Sol menüden istediğiniz yönetim ekranına erişebilirsiniz.</p>
+    </div>
+</div>

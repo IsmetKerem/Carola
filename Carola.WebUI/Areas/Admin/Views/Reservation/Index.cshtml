@@ -1,0 +1,123 @@
+@model List<Carola.DtoLayer.ReservationDtos.ResultReservationDto>
+@using Carola.EntityLayer.Enums
+@{
+    ViewData["Title"] = "Rezervasyon Yönetimi";
+    var currentStatus = ViewBag.CurrentStatus as int?;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* TAB'LAR — durum filtresi *@
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <a asp-action="Index" class="btn @(currentStatus == null ? "btn-dark" : "btn-light")" style="border-radius:8px">
+        Tümü <span class="badge bg-secondary ms-1">@ViewBag.TotalCount</span>
+    </a>
+    <a asp-action="Index" asp-route-status="1" class="btn @(currentStatus == 1 ? "btn-warning text-dark" : "btn-light")" style="border-radius:8px">
+        <i class="bi bi-clock-history"></i> Bekleyen <span class="badge bg-warning text-dark ms-1">@ViewBag.PendingCount</span>
+    </a>
+    <a asp-action="Index" asp-route-status="2" class="btn @(currentStatus == 2 ? "btn-success" : "btn-light")" style="border-radius:8px">
+        <i class="bi bi-check-circle"></i> Onaylı <span class="badge bg-success ms-1">@ViewBag.ApprovedCount</span>
+    </a>
+    <a asp-action="Index" asp-route-status="3" class="btn @(currentStatus == 3 ? "btn-danger" : "btn-light")" style="border-radius:8px">
+        <i class="bi bi-x-circle"></i> Reddedildi <span class="badge bg-danger ms-1">@ViewBag.RejectedCount</span>
+    </a>
+</div>
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h5 class="data-card-title">Rezervasyonlar (@Model.Count)</h5>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Müşteri</th>
+                    <th>Araç</th>
+                    <th>Alış / İade</th>
+                    <th>Tarih Aralığı</th>
+                    <th>Tutar</th>
+                    <th>Durum</th>
+                    <th>Oluşturulma</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted py-4">Bu durumda rezervasyon bulunmuyor.</td></tr>
+                }
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>#@r.ReservationId</td>
+                        <td><strong>@r.CustomerFullName</strong></td>
+                        <td>
+                            <strong>@r.BrandName</strong> <small class="text-muted">@r.CarModel</small>
+                        </td>
+                        <td class="small">
+                            <i class="bi bi-arrow-up-right text-success"></i> @r.PickupLocationName<br/>
+                            <i class="bi bi-arrow-down-left text-primary"></i> @r.ReturnLocationName
+                        </td>
+                        <td class="small">
+                            @r.PickupDate.ToString("dd.MM.yyyy") <i class="bi bi-arrow-right"></i> @r.ReturnDate.ToString("dd.MM.yyyy")<br/>
+                            <span class="text-muted">@((r.ReturnDate - r.PickupDate).Days) gün</span>
+                        </td>
+                        <td><strong>@r.TotalPrice.ToString("N0") ₺</strong></td>
+                        <td>
+                            @switch (r.Status)
+                            {
+                                case ReservationStatus.Pending:
+                                    <span class="status-badge pending">Bekliyor</span>
+                                    break;
+                                case ReservationStatus.Approved:
+                                    <span class="status-badge active">Onaylandı</span>
+                                    break;
+                                case ReservationStatus.Rejected:
+                                    <span class="status-badge inactive">Reddedildi</span>
+                                    break;
+                                case ReservationStatus.Cancelled:
+                                    <span class="status-badge inactive">İptal</span>
+                                    break;
+                                case ReservationStatus.Completed:
+                                    <span class="status-badge active">Tamamlandı</span>
+                                    break;
+                            }
+                        </td>
+                        <td class="text-muted small">@r.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td class="text-end">
+                            <a asp-action="Detail" asp-route-id="@r.ReservationId" class="btn-icon text-primary" title="Detay">
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            @if (r.Status == ReservationStatus.Pending)
+                            {
+                                <a asp-action="Approve" asp-route-id="@r.ReservationId" class="btn-icon"
+                                   style="color:var(--success)" title="Onayla"
+                                   onclick="return confirm('Bu rezervasyonu onaylayıp müşteriye mail göndermek istediğinize emin misiniz?')">
+                                    <i class="bi bi-check-lg"></i>
+                                </a>
+                                <a asp-action="Reject" asp-route-id="@r.ReservationId" class="btn-icon text-danger" title="Reddet"
+                                   onclick="return confirm('Bu rezervasyonu reddetmek istediğinize emin misiniz?')">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                            }
+
+                            <a asp-action="Delete" asp-route-id="@r.ReservationId" class="btn-icon text-danger" title="Sil"
+                               onclick="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

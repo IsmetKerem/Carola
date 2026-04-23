@@ -1,0 +1,45 @@
+@model Carola.DtoLayer.SliderDtos.CreateSliderDto
+@{
+    ViewData["Title"] = "Yeni Slider";
+}
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Başlık</label>
+            <input asp-for="Title" class="form-control" placeholder="Örn: Hayalinizdeki Aracı Kiralayın" />
+            <span asp-validation-for="Title" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Açıklama</label>
+            <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="BackgroundImage" class="form-label">Arka Plan Görseli</label>
+                <input asp-for="BackgroundImage" class="form-control" placeholder="/assets/images/slider/slider-bg-1.jpg" />
+                <span asp-validation-for="BackgroundImage" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Image" class="form-label">Araç Görseli</label>
+                <input asp-for="Image" class="form-control" placeholder="/assets/images/slider/slider-car-1.png" />
+                <span asp-validation-for="Image" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="form-check mt-3 mb-4">
+            <input asp-for="Status" class="form-check-input" />
+            <label asp-for="Status" class="form-check-label">Anasayfada göster (aktif)</label>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

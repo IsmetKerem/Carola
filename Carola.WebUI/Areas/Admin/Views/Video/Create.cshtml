@@ -1,0 +1,22 @@
+@model Carola.DtoLayer.VideoDtos.CreateVideoDto
+@{
+    ViewData["Title"] = "Yeni Video";
+}
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <div class="mb-4">
+            <label asp-for="VideoUrl" class="form-label">Video URL</label>
+            <input asp-for="VideoUrl" class="form-control" placeholder="https://www.youtube.com/embed/..." />
+            <span asp-validation-for="VideoUrl" class="text-danger small"></span>
+            <small class="text-muted d-block mt-1">YouTube embed linki veya doğrudan video URL'si ekleyin.</small>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

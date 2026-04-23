@@ -1,0 +1,23 @@
+@model Carola.DtoLayer.GalleryDtos.UpdateGalleryDto
+@{
+    ViewData["Title"] = "Görsel Güncelle";
+}
+
+<div class="form-card">
+    <form asp-action="Update" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <input asp-for="GalleryId" type="hidden" />
+
+        <div class="mb-4">
+            <label asp-for="ImageUrl" class="form-label">Görsel URL</label>
+            <input asp-for="ImageUrl" class="form-control" />
+            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Güncelle
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

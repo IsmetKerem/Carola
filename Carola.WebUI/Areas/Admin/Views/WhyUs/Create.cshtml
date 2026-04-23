@@ -1,0 +1,33 @@
+@model Carola.DtoLayer.WhyUsDtos.CreateWhyUsDto
+@{
+    ViewData["Title"] = "Yeni Madde";
+}
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <div class="mb-3">
+            <label asp-for="IconUrl" class="form-label">İkon URL</label>
+            <input asp-for="IconUrl" class="form-control" placeholder="/assets/images/icons/icon-1.png" />
+            <span asp-validation-for="IconUrl" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Başlık</label>
+            <input asp-for="Title" class="form-control" placeholder="Örn: 7/24 Müşteri Desteği" />
+            <span asp-validation-for="Title" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Description" class="form-label">Açıklama</label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

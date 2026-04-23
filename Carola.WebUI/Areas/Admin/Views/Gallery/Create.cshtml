@@ -1,0 +1,21 @@
+@model Carola.DtoLayer.GalleryDtos.CreateGalleryDto
+@{
+    ViewData["Title"] = "Yeni Görsel";
+}
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <div class="mb-4">
+            <label asp-for="ImageUrl" class="form-label">Görsel URL</label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="/assets/images/gallery/img-1.jpg" />
+            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

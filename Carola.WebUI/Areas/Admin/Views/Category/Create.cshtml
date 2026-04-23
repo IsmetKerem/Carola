@@ -1,0 +1,27 @@
+@model Carola.DtoLayer.CategoryDtos.CreateCategoryDto
+@{
+    ViewData["Title"] = "Yeni Kategori";
+}
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryName" class="form-label">Kategori Adı</label>
+            <input asp-for="CategoryName" class="form-control" placeholder="Örn: Sedan" />
+            <span asp-validation-for="CategoryName" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="CategoryImage" class="form-label">Görsel URL</label>
+            <input asp-for="CategoryImage" class="form-control" placeholder="/assets/images/categories/sedan.png" />
+            <span asp-validation-for="CategoryImage" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

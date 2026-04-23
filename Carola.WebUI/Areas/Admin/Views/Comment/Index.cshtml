@@ -1,0 +1,71 @@
+@model List<Carola.DtoLayer.CommentDtos.ResultCommentDto>
+@{
+    ViewData["Title"] = "Yorum Yönetimi";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h5 class="data-card-title">Yorumlar (@Model.Count)</h5>
+        <a asp-action="Create" class="btn-primary-action">
+            <i class="bi bi-plus-lg"></i> Yeni Yorum
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Kullanıcı</th>
+                    <th>Yorum</th>
+                    <th>Puan</th>
+                    <th>Araç ID</th>
+                    <th>Tarih</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.CommentId</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="@item.UserImage" alt="user"
+                                     onerror="this.src='https://via.placeholder.com/32?text=U'"
+                                     style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                                <strong class="ms-2">@item.UserName</strong>
+                            </div>
+                        </td>
+                        <td class="text-muted small" style="max-width:350px">@item.CommentText</td>
+                        <td>
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                <i class="bi bi-star-fill" style="color:@(i < item.Rating ? "#f59e0b" : "#e5e7eb");font-size:12px"></i>
+                            }
+                        </td>
+                        <td>#@item.CarId</td>
+                        <td class="text-muted small">@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td class="text-end">
+                            <a asp-action="Update" asp-route-id="@item.CommentId" class="btn-icon text-primary" title="Düzenle">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.CommentId" class="btn-icon text-danger" title="Sil"
+                               onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

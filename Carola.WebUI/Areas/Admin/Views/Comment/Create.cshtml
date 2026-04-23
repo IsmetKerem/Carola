@@ -1,0 +1,58 @@
+@model Carola.DtoLayer.CommentDtos.CreateCommentDto
+@{
+    ViewData["Title"] = "Yeni Yorum";
+    var cars = ViewBag.Cars as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+}
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="UserName" class="form-label">Kullanıcı Adı</label>
+                <input asp-for="UserName" class="form-control" placeholder="Örn: Ahmet Yılmaz" />
+                <span asp-validation-for="UserName" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="UserImage" class="form-label">Profil Görseli URL</label>
+                <input asp-for="UserImage" class="form-control" placeholder="/assets/images/users/u1.jpg" />
+                <span asp-validation-for="UserImage" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-8">
+                <label asp-for="CarId" class="form-label">Araç</label>
+                <select asp-for="CarId" asp-items="cars" class="form-select">
+                    <option value="">-- Araç Seçin --</option>
+                </select>
+                <span asp-validation-for="CarId" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Rating" class="form-label">Puan (1-5)</label>
+                <select asp-for="Rating" class="form-select">
+                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4)</option>
+                    <option value="3">⭐⭐⭐ (3)</option>
+                    <option value="2">⭐⭐ (2)</option>
+                    <option value="1">⭐ (1)</option>
+                </select>
+                <span asp-validation-for="Rating" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="CommentText" class="form-label">Yorum</label>
+                <textarea asp-for="CommentText" class="form-control" rows="4" placeholder="Yorum metnini yazın..."></textarea>
+                <span asp-validation-for="CommentText" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn-primary-action">
+                <i class="bi bi-check-lg"></i> Kaydet
+            </button>
+            <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,34 @@
+@model Carola.DtoLayer.BrandDtos.UpdateBrandDto
+@{
+    ViewData["Title"] = "Marka Güncelle";
+}
+
+<div class="form-card">
+    <form asp-action="Update" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <input asp-for="BrandId" type="hidden" />
+
+        <div class="mb-3">
+            <label asp-for="BrandName" class="form-label">Marka Adı</label>
+            <input asp-for="BrandName" class="form-control" />
+            <span asp-validation-for="BrandName" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LogoUrl" class="form-label">Logo URL</label>
+            <input asp-for="LogoUrl" class="form-control" />
+            <span asp-validation-for="LogoUrl" class="text-danger small"></span>
+        </div>
+
+        <div class="form-check mb-4">
+            <input asp-for="Status" class="form-check-input" />
+            <label asp-for="Status" class="form-check-label">Anasayfada öne çıkan marka olarak göster</label>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Güncelle
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>

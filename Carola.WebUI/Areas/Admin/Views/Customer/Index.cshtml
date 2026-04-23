@@ -1,0 +1,61 @@
+@model List<Carola.DtoLayer.CustomerDtos.ResultCustomerDto>
+@{
+    ViewData["Title"] = "Müşteri Yönetimi";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="data-card">
+    <div class="data-card-header">
+        <h5 class="data-card-title">Müşteriler (@Model.Count)</h5>
+        <small class="text-muted">Müşteri kayıtları booking akışında OCR ile otomatik oluşturulur.</small>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ad Soyad</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th>Ehliyet No</th>
+                    <th>Sınıf</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">Henüz müşteri kaydı yok.</td></tr>
+                }
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>#@c.CustomerId</td>
+                        <td><strong>@c.FirstName @c.LastName</strong></td>
+                        <td><a href="mailto:@c.Email" class="text-decoration-none">@c.Email</a></td>
+                        <td>@c.Phone</td>
+                        <td>@c.DriverLicenseNumber</td>
+                        <td><span class="status-badge active">@c.DriverLicenseClass</span></td>
+                        <td class="text-end">
+                            <a asp-action="Detail" asp-route-id="@c.CustomerId" class="btn-icon text-primary" title="Detay">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@c.CustomerId" class="btn-icon text-danger" title="Sil"
+                               onclick="return confirm('Bu müşteri kaydını silmek istediğinize emin misiniz? Müşterinin tüm rezervasyonları da silinecektir.')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+@model Carola.DtoLayer.ContactDtos.GetByIdContactDto
+@{
+    ViewData["Title"] = "Mesaj Detayı";
+}
+
+<div class="data-card" style="max-width:800px">
+    <div class="data-card-header">
+        <h5 class="data-card-title">@Model.Subject</h5>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">
+            <i class="bi bi-arrow-left"></i> Mesajlara Dön
+        </a>
+    </div>
+
+    <div class="p-4">
+        <div class="row mb-3">
+            <div class="col-sm-3 text-muted">Gönderen:</div>
+            <div class="col-sm-9"><strong>@Model.FullName</strong></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3 text-muted">Email:</div>
+            <div class="col-sm-9"><a href="mailto:@Model.Email">@Model.Email</a></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3 text-muted">Tarih:</div>
+            <div class="col-sm-9">@Model.SendDate.ToString("dd MMMM yyyy, HH:mm")</div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-sm-3 text-muted">Mesaj:</div>
+            <div class="col-sm-9" style="white-space:pre-wrap">@Model.MessageText</div>
+        </div>
+
+        <hr/>
+        <div class="d-flex gap-2">
+            <a href="mailto:@Model.Email?subject=RE: @Model.Subject" class="btn-primary-action">
+                <i class="bi bi-reply"></i> Yanıtla
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.ContactId" class="btn btn-outline-danger"
+               onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?')">
+                <i class="bi bi-trash"></i> Sil
+            </a>
+        </div>
+    </div>
+</div>

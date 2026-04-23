@@ -1,0 +1,51 @@
+@model Carola.DtoLayer.LocationDtos.UpdateLocationDto
+@{
+    ViewData["Title"] = "Lokasyon Güncelle";
+}
+
+<div class="form-card">
+    <form asp-action="Update" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <input asp-for="LocationId" type="hidden" />
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="LocationName" class="form-label">Lokasyon Adı</label>
+                <input asp-for="LocationName" class="form-control" />
+                <span asp-validation-for="LocationName" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="City" class="form-label">Şehir</label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="AuthorizedPerson" class="form-label">Yetkili Kişi</label>
+                <input asp-for="AuthorizedPerson" class="form-control" />
+                <span asp-validation-for="AuthorizedPerson" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="ImageUrl" class="form-label">Görsel URL</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Address" class="form-label">Adres</label>
+                <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Address" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn-primary-action">
+                <i class="bi bi-check-lg"></i> Güncelle
+            </button>
+            <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+        </div>
+    </form>
+</div>

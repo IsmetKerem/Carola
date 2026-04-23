@@ -1,0 +1,123 @@
+@{
+    Layout = null;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carola Admin - @ViewData["Title"]</title>
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Admin custom CSS -->
+    <link rel="stylesheet" href="~/admin-assets/css/admin.css" />
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============= SIDEBAR ============= -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-car-front-fill"></i>
+            <span>Carola Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Genel</div>
+            <a class="nav-link @(currentController == "Dashboard" ? "active" : "")"
+               asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+            <div class="nav-section-title">Yönetim</div>
+            <a class="nav-link @(currentController == "Slider" ? "active" : "")"
+               asp-area="Admin" asp-controller="Slider" asp-action="Index">
+                <i class="bi bi-image"></i> Slider Yönetimi
+            </a>
+            <a class="nav-link @(currentController == "Brand" ? "active" : "")"
+               asp-area="Admin" asp-controller="Brand" asp-action="Index">
+                <i class="bi bi-tag"></i> Marka Yönetimi
+            </a>
+            <a class="nav-link @(currentController == "Category" ? "active" : "")"
+               asp-area="Admin" asp-controller="Category" asp-action="Index">
+                <i class="bi bi-grid"></i> Kategori Yönetimi
+            </a>
+            <a class="nav-link @(currentController == "Car" ? "active" : "")"
+               asp-area="Admin" asp-controller="Car" asp-action="Index">
+                <i class="bi bi-car-front"></i> Araç Yönetimi
+            </a>
+            <a class="nav-link @(currentController == "Location" ? "active" : "")"
+               asp-area="Admin" asp-controller="Location" asp-action="Index">
+                <i class="bi bi-geo-alt"></i> Lokasyon Yönetimi
+            </a>
+            <a class="nav-link @(currentController == "WhyUs" ? "active" : "")"
+               asp-area="Admin" asp-controller="WhyUs" asp-action="Index">
+                <i class="bi bi-stars"></i> "We Are The Best"
+            </a>
+
+            <div class="nav-section-title">İşlemler</div>
+            <a class="nav-link @(currentController == "Reservation" ? "active" : "")"
+               asp-area="Admin" asp-controller="Reservation" asp-action="Index">
+                <i class="bi bi-calendar-check"></i> Rezervasyonlar
+            </a>
+            <a class="nav-link @(currentController == "Comment" ? "active" : "")"
+               asp-area="Admin" asp-controller="Comment" asp-action="Index">
+                <i class="bi bi-chat-dots"></i> Yorumlar
+            </a>
+            <a class="nav-link @(currentController == "Contact" ? "active" : "")"
+               asp-area="Admin" asp-controller="Contact" asp-action="Index">
+                <i class="bi bi-envelope"></i> Mesajlar
+            </a>
+            <a class="nav-link @(currentController == "Customer" ? "active" : "")"
+               asp-area="Admin" asp-controller="Customer" asp-action="Index">
+                <i class="bi bi-people"></i> Müşteriler
+            </a>
+            <a class="nav-link @(currentController == "Gallery" ? "active" : "")"
+               asp-area="Admin" asp-controller="Gallery" asp-action="Index">
+                <i class="bi bi-images"></i> Galeri
+            </a>
+            <a class="nav-link @(currentController == "Video" ? "active" : "")"
+               asp-area="Admin" asp-controller="Video" asp-action="Index">
+                <i class="bi bi-camera-video"></i> Video
+            </a>
+
+            <div class="nav-section-title">Hesap</div>
+            <a class="nav-link" asp-area="Admin" asp-controller="Login" asp-action="Logout">
+                <i class="bi bi-box-arrow-right"></i> Çıkış Yap
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ============= MAIN ============= -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <h5 class="topbar-title mb-0">@ViewData["Title"]</h5>
+            </div>
+            <div class="topbar-right">
+                <span class="text-muted me-3">
+                    <i class="bi bi-person-circle"></i>
+                    @User.Identity?.Name
+                </span>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            @RenderBody()
+        </div>
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

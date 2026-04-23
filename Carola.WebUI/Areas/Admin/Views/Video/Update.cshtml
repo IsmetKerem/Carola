@@ -1,0 +1,23 @@
+@model Carola.DtoLayer.VideoDtos.UpdateVideoDto
+@{
+    ViewData["Title"] = "Video Güncelle";
+}
+
+<div class="form-card">
+    <form asp-action="Update" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" style="@(ViewData.ModelState.IsValid ? "display:none" : "")"></div>
+
+        <input asp-for="VideoId" type="hidden" />
+
+        <div class="mb-4">
+            <label asp-for="VideoUrl" class="form-label">Video URL</label>
+            <input asp-for="VideoUrl" class="form-control" />
+            <span asp-validation-for="VideoUrl" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+            <i class="bi bi-check-lg"></i> Güncelle
+        </button>
+        <a asp-action="Index" class="btn btn-link text-decoration-none">İptal</a>
+    </form>
+</div>
