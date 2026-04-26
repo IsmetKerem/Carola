@@ -1,0 +1,97 @@
+@model Carola.WebUI.Models.CarsListViewModel
+@{
+    ViewData["Title"] = "Araçlar";
+}
+
+<!-- Breadcrumb -->
+<section class="breadcrumb-section" style="background-image: url('/site-assets/images/background/inner-banner-bg-3.png');">
+    <div class="container">
+        <div class="banner-content">
+            <h1>Araç Filomuz</h1>
+            <p class="text-white-50 mt-2">
+                <a asp-controller="Home" asp-action="Index" class="text-white-50">Anasayfa</a>
+                <i class="fas fa-angle-right mx-2"></i>
+                Araçlar
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Car Listing Section -->
+<section class="car-listing-section pt_120 pb_90">
+    <div class="container">
+
+        <!-- Üst bilgi: Kaç araç bulundu + sıralama -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p class="mb-0">
+                    <strong>@Model.CarsPage.TotalCount</strong> araç bulundu
+                    @if (Model.Filter.PickupDate.HasValue && Model.Filter.ReturnDate.HasValue)
+                    {
+                        <span class="text-muted">
+                            (<i class="far fa-calendar-alt"></i>
+                            @Model.Filter.PickupDate.Value.ToString("dd.MM.yyyy") -
+                            @Model.Filter.ReturnDate.Value.ToString("dd.MM.yyyy")
+                            arası müsait)
+                        </span>
+                    }
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <form method="get" id="sortForm" class="d-inline-flex align-items-center gap-2">
+                    @* Mevcut filtreleri koru *@
+                    @foreach (var kv in Context.Request.Query.Where(q => q.Key != "sortBy" && q.Key != "pageNumber"))
+                    {
+                        <input type="hidden" name="@kv.Key" value="@kv.Value" />
+                    }
+                    <label class="text-muted small mb-0">Sırala:</label>
+                    <select name="sortBy" class="form-select form-select-sm" style="width:auto"
+                            onchange="document.getElementById('sortForm').submit()">
+                        <option value="newest"     selected="@(Model.Filter.SortBy == "newest" || string.IsNullOrEmpty(Model.Filter.SortBy))">En Yeni</option>
+                        <option value="price_asc"  selected="@(Model.Filter.SortBy == "price_asc")">Fiyat (Artan)</option>
+                        <option value="price_desc" selected="@(Model.Filter.SortBy == "price_desc")">Fiyat (Azalan)</option>
+                        <option value="oldest"     selected="@(Model.Filter.SortBy == "oldest")">En Eski</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Sol Filtre -->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+                @await Html.PartialAsync("_CarFilter", Model)
+            </div>
+
+            <!-- Sağ Araç Listesi -->
+            <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+
+                @if (!Model.CarsPage.Items.Any())
+                {
+                    <div class="alert alert-info text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4>Aradığınız kriterlere uygun araç bulunamadı</h4>
+                        <p class="text-muted">Filtreleri değiştirin veya tarihleri kontrol edin.</p>
+                        <a asp-controller="Cars" asp-action="Index" class="btn-style-three mt-3">Filtreleri Temizle</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        @foreach (var car in Model.CarsPage.Items)
+                        {
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                @await Html.PartialAsync("_CarCard", car)
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Paging -->
+                    @await Html.PartialAsync("_Pagination", Model.CarsPage)
+                }
+
+            </div>
+
+        </div>
+    </div>
+</section>

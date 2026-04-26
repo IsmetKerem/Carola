@@ -1,0 +1,30 @@
+@model List<Carola.DtoLayer.BrandDtos.ResultBrandDto>
+
+<section class="brand-section pt_120 pb_120">
+    <div class="container">
+        <div class="section-title-box">
+            <div class="section-title">
+                <span class="sub-title">Markalar</span>
+                <h2 class="title">Premium Araç Markaları</h2>
+            </div>
+            <div class="show-all-btn">
+                <a asp-controller="Cars" asp-action="Index" class="btn-style-three">Tüm Araçları Göster</a>
+            </div>
+        </div>
+
+        <div class="brand-outer-box">
+            @foreach (var brand in Model)
+            {
+                <div class="single-brand-item">
+                    <div class="brand-image">
+                        <img src="@brand.LogoUrl" alt="@brand.BrandName"
+                             onerror="this.src='/site-assets/images/brands/brand-1.png'">
+                    </div>
+                    <div class="brand-title">
+                        <h6>@brand.BrandName</h6>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

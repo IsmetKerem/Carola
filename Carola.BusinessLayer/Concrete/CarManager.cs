@@ -2,6 +2,7 @@ using AutoMapper;
 using Carola.BusinessLayer.Abstract;
 using Carola.DataAccessLayer.Repositories.CarRepository;
 using Carola.DtoLayer.CarDtos;
+using Carola.DtoLayer.Common;
 using Carola.EntityLayer.Entities;
 
 namespace Carola.BusinessLayer.Concrete
@@ -51,6 +52,22 @@ namespace Carola.BusinessLayer.Concrete
         {
             var entity = _mapper.Map<Car>(dto);
             await _carDal.UpdateAsync(entity);
+        }
+        public async Task<PagedResult<ResultCarDto>> TGetFilteredCarsAsync(CarFilterDto filter)
+        {
+            var pagedEntities = await _carDal.GetFilteredCarsAsync(filter);
+
+            return new PagedResult<ResultCarDto>
+            {
+                Items = _mapper.Map<List<ResultCarDto>>(pagedEntities.Items),
+                TotalCount = pagedEntities.TotalCount,
+                PageNumber = pagedEntities.PageNumber,
+                PageSize = pagedEntities.PageSize
+            };
+        }
+        public async Task<decimal> TGetMaxDailyPriceAsync()
+        {
+            return await _carDal.GetMaxDailyPriceAsync();
         }
     }
 }

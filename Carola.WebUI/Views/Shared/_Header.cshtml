@@ -1,0 +1,127 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+}
+
+<header class="header home-three">
+
+    <!-- Header Top -->
+    <div class="header-top-one">
+        <div class="container">
+            <div class="header-top-outer">
+                <div class="header-top-info">
+                    <i class="far fa-clock"></i>
+                    <p>Açık Saatler: Pzt - Cuma 8.00 - 18.00</p>
+                </div>
+                <div class="header-top-contact-info">
+                    <ul>
+                        <li><i class="icon-22"></i><a href="tel:+908508404848">+90 850 840 48 48</a></li>
+                        <li><i class="icon-23"></i><a href="mailto:info@carola.com">info@carola.com</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <div class="main_header">
+        <div class="container">
+            <div class="main_header_inner">
+                <div class="main_header_logo">
+                    <figure>
+                        <a asp-controller="Home" asp-action="Index">
+                            <img src="~/site-assets/images/logo-light.png" alt="Carola">
+                        </a>
+                    </figure>
+                </div>
+                <div class="main_header_menu menu_area">
+                    <!-- Mobile Navigation Toggler -->
+                    <div class="mobile-nav-toggler">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </div>
+                    <nav class="main-menu">
+                        <div class="collapse navbar-collapse show" id="navbarSupportedContent">
+                            <ul class="navigation">
+                                <li class="@(currentController == "Home" ? "active" : "")">
+                                    <a asp-controller="Home" asp-action="Index">Anasayfa</a>
+                                </li>
+                                <li class="@(currentController == "Cars" ? "active" : "")">
+                                    <a asp-controller="Cars" asp-action="Index">Araçlar</a>
+                                </li>
+                                <li class="@(currentController == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "About" ? "active" : "")">
+                                    <a asp-controller="Home" asp-action="About">Hakkımızda</a>
+                                </li>
+                                <li class="@(currentController == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Contact" ? "active" : "")">
+                                    <a asp-controller="Home" asp-action="Contact">İletişim</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <div class="header_right_content">
+                    <button class="search-toggler"><i class="fas fa-search"></i></button>
+                    <div class="link-btn">
+                        <a asp-controller="Booking" asp-action="Index" class="btn-style-one">Hemen Kirala</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Header -->
+    <div class="sticky_header">
+        <div class="container">
+            <div class="main_header_inner">
+                <div class="main_header_logo">
+                    <figure>
+                        <a asp-controller="Home" asp-action="Index">
+                            <img src="~/site-assets/images/logo-light.png" alt="Carola">
+                        </a>
+                    </figure>
+                </div>
+                <div class="main_header_menu menu_area">
+                    <nav class="main-menu">
+                        <!-- Tema kendi JS'i ile menüyü buraya kopyalıyor -->
+                    </nav>
+                </div>
+                <div class="header_right_content">
+                    <button class="search-toggler"><i class="fas fa-search"></i></button>
+                    <div class="link-btn">
+                        <a asp-controller="Booking" asp-action="Index" class="btn-style-one">Hemen Kirala</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <div class="menu-backdrop"></div>
+        <div class="close-btn">X</div>
+        <nav class="menu-box">
+            <div class="nav-logo">
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/site-assets/images/mobile-logo.png" alt="Carola">
+                </a>
+            </div>
+            <div class="menu-outer"><!-- JS doldurur --></div>
+            <div class="contact-info">
+                <h4>İletişim</h4>
+                <ul>
+                    <li>İstanbul Havalimanı, Arnavutköy</li>
+                    <li><a href="tel:+908508404848">+90 850 840 48 48</a></li>
+                    <li><a href="mailto:info@carola.com">info@carola.com</a></li>
+                </ul>
+            </div>
+            <ul class="social-links centred">
+                <li><a href="#"><span class="fab fa-twitter"></span></a></li>
+                <li><a href="#"><span class="fab fa-facebook-square"></span></a></li>
+                <li><a href="#"><span class="fab fa-instagram"></span></a></li>
+                <li><a href="#"><span class="fab fa-youtube"></span></a></li>
+            </ul>
+        </nav>
+    </div>
+
+</header>

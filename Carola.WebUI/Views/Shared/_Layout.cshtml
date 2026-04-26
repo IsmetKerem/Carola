@@ -1,49 +1,122 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Carola.WebUI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/Carola.WebUI.styles.css" asp-append-version="true"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <title>Carola - @ViewData["Title"]</title>
+
+    <!-- Tema CSS -->
+    <link href="~/site-assets/css/bootstrap.css" rel="stylesheet">
+    <link href="~/site-assets/css/fontawesome-all.css" rel="stylesheet">
+    <link href="~/site-assets/css/iconfont.css" rel="stylesheet">
+    <link href="~/site-assets/css/owl.css" rel="stylesheet">
+    <link href="~/site-assets/css/global.css" rel="stylesheet">
+    <link href="~/site-assets/css/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="~/site-assets/css/elements-css/header.css" rel="stylesheet">
+    <link href="~/site-assets/css/elements-css/footer.css" rel="stylesheet">
+    <link href="~/site-assets/css/elements-css/booking-form.css" rel="stylesheet">
+    <link href="~/site-assets/language-switcher/polyglot-language-switcher.css" rel="stylesheet" />
+    <link href="~/site-assets/css/daterangepicker.css" rel="stylesheet">
+    <link href="~/site-assets/css/jquery-ui.css" rel="stylesheet">
+    <link href="~/site-assets/css/style.css" rel="stylesheet">
+    <link href="~/site-assets/css/responsive.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="~/site-assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="~/site-assets/images/favicon.png" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Carola.WebUI</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
+
+<body class="boxed_wrapper">
+
+    <!-- Preloader -->
+    <div class="loader-wrap">
+        <div class="preloader">
+            <div class="preloader-close">x</div>
+            <div id="handle-preloader" class="handle-preloader">
+                <div class="animation-preloader">
+                    <div class="spinner"></div>
+                    <div class="txt-loading">
+                        <span data-text-preloader="C" class="letters-loading">C</span>
+                        <span data-text-preloader="a" class="letters-loading">a</span>
+                        <span data-text-preloader="r" class="letters-loading">r</span>
+                        <span data-text-preloader="o" class="letters-loading">o</span>
+                        <span data-text-preloader="l" class="letters-loading">l</span>
+                        <span data-text-preloader="a" class="letters-loading">a</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2026 - Carola.WebUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Search Popup -->
+    <div id="search-popup" class="search-popup">
+        <div class="popup-inner">
+            <div class="container">
+                <div class="upper-box">
+                    <figure class="logo-box">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img src="~/site-assets/images/logo.png" alt="Carola">
+                        </a>
+                    </figure>
+                    <div class="close-search"><span class="fa-solid fa-xmark"></span></div>
+                </div>
+            </div>
+            <div class="overlay-layer"></div>
+            <div class="container">
+                <div class="search-form">
+                    <form method="get" asp-controller="Cars" asp-action="Index">
+                        <div class="form-group">
+                            <fieldset>
+                                <input type="search" class="form-control" name="q" placeholder="Araç ara..." required>
+                                <button type="submit"><i class="icon-50"></i></button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    @await Html.PartialAsync("_Header")
+
+    <!-- Main content -->
+    @RenderBody()
+
+    <!-- Footer -->
+    @await Html.PartialAsync("_Footer")
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top scroll-to-target" data-target="html">
+        <i class="icon-13"></i>
+    </button>
+
+    <!-- Tema JS -->
+    <script src="~/site-assets/js/jquery-3.7.1.min.js"></script>
+    <script src="~/site-assets/js/jquery-ui.js"></script>
+    <script src="~/site-assets/js/moment.min.js"></script>
+    <script src="~/site-assets/js/daterangepicker.min.js"></script>
+    <script src="~/site-assets/js/bootstrap.min.js"></script>
+    <script src="~/site-assets/js/popper.min.js"></script>
+    <script src="~/site-assets/js/select2.min.js"></script>
+    <script src="~/site-assets/js/jquery.nice-select.min.js"></script>
+    <script src="~/site-assets/js/jquery.fancybox.js"></script>
+    <script src="~/site-assets/js/appear.js"></script>
+    <script src="~/site-assets/js/wow.js"></script>
+    <script src="~/site-assets/js/owl.js"></script>
+    <script src="~/site-assets/js/validation.js"></script>
+    <script src="~/site-assets/language-switcher/jquery.polyglot.language.switcher.js"></script>
+    <script src="~/site-assets/js/main.js"></script>
+    <script src="~/site-assets/js/booking-form.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

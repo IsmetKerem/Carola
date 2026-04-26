@@ -1,0 +1,75 @@
+@model List<Carola.DtoLayer.CarDtos.ResultCarDto>
+
+<section class="featured-car-section pt_120 pb_90"
+         style="background-image: url('/site-assets/images/background/most-popular-car.jpg');">
+    <div class="container">
+        <div class="section-title centred mb_60">
+            <span class="sub-title">Filomuz</span>
+            <h2 class="title">Yeni Eklenen Araçlar</h2>
+        </div>
+
+        <div class="row">
+
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center text-white py-5">
+                    <p>Henüz araç eklenmemiş. Admin panelinden araç ekleyebilirsiniz.</p>
+                </div>
+            }
+
+            @foreach (var car in Model)
+            {
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="single-featured-car-block style_two">
+
+                        <div class="single-featured-car-image">
+                            <a asp-controller="Cars" asp-action="Detail" asp-route-id="@car.CarId">
+                                <img src="@car.ImageUrl" alt="@car.Model"
+                                     onerror="this.src='/site-assets/images/featured-car/featured-car-4.jpg'">
+                            </a>
+                        </div>
+
+                        <div class="single-featured-car-content">
+                            <div class="single-featured-car-rating"><i class="icon-9"></i> 4.8</div>
+
+                            <h5 class="single-featured-car-title">
+                                <a asp-controller="Cars" asp-action="Detail" asp-route-id="@car.CarId">
+                                    @car.BrandName @car.Model
+                                </a>
+                            </h5>
+
+                            <div class="single-featured-car-rent-per-day-2">
+                                <span>@car.DailyPrice.ToString("N0") ₺</span>/ Gün
+                            </div>
+
+                            <div class="border-divider"></div>
+
+                            <div class="featured-car-info-outer">
+                                <ul class="single-featured-car-info">
+                                    <li><i class="icon-6"></i>@car.FuelType</li>
+                                    <li><i class="icon-30"></i>@car.TransmissionType</li>
+                                </ul>
+                                <ul class="single-featured-car-info">
+                                    <li><i class="icon-28"></i>@car.Mileage km</li>
+                                    <li><i class="icon-29"></i>@car.LuggageCapacity Bavul</li>
+                                </ul>
+                                <ul class="single-featured-car-info">
+                                    <li><i class="icon-8"></i>@car.SeatCount Koltuk</li>
+                                    <li><i class="icon-7"></i>@car.ModelYear</li>
+                                </ul>
+                            </div>
+
+                            <div class="single-featured-car-book-btn">
+                                <a asp-controller="Cars" asp-action="Detail" asp-route-id="@car.CarId" class="btn-style-three">
+                                    Hemen Kirala
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,30 @@
+@model List<Carola.DtoLayer.CategoryDtos.ResultCategoryDto>
+
+<section class="car-type-section pt_120 pb_90 home-three">
+    <div class="container">
+        <div class="section-title centred mb_60">
+            <span class="sub-title">Kategoriler</span>
+            <h2 class="title">Araç Kategorilerini Keşfet</h2>
+        </div>
+
+        <div class="car-type-outer-box">
+            @foreach (var category in Model)
+            {
+                <div class="car-type-item">
+                    <div class="car-image">
+                        <img src="@category.CategoryImage" alt="@category.CategoryName"
+                             onerror="this.src='/site-assets/images/car-type/car-1.png'">
+                        <div class="shape"><img src="~/site-assets/images/shape/shape-2.png" alt=""></div>
+                    </div>
+                    <div class="car-name">
+                        <h6>
+                            <a asp-controller="Cars" asp-action="Index" asp-route-categoryId="@category.CategoryId">
+                                @category.CategoryName
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

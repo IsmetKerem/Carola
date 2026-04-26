@@ -1,0 +1,47 @@
+@model List<Carola.DtoLayer.SliderDtos.ResultSliderDto>
+
+<section class="slider style_three">
+    <div class="owl-carousel owl-nav-none owl_dots_none theme_carousel owl-theme"
+         data-options='{"loop": true, "margin": 0, "autoheight":true, "lazyload":true, "nav": true, "dots": true, "autoplay": true, "autoplayTimeout": 7000, "smartSpeed": 1800, "responsive":{ "0" :{ "items": "1" }, "768" :{ "items" : "1" } , "1000":{ "items" : "1" }}}'>
+
+        @if (!Model.Any())
+        {
+            <!-- Veritabanında slider yoksa default tek slide göster -->
+            <div class="slide-item-content">
+                <div class="slide-item content_left">
+                    <div class="image-layer" style="background-image:url('/site-assets/images/sliders/slider-3.jpg')"></div>
+                    <div class="container">
+                        <div class="slider_content">
+                            <h6 class="animate_up d-inline-block">Carola</h6>
+                            <h1 class="animate_left">Hayalinizdeki <br><span>Aracı Kiralayın</span></h1>
+                            <p class="description animate_right">Premium filomuz ve uygun fiyatlarımızla<br>her bütçeye uygun seçenekler</p>
+                            <div class="button_all animate_down">
+                                <a asp-controller="Cars" asp-action="Index" class="btn-style-four animated">Araçları Keşfet</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @foreach (var slide in Model)
+        {
+            <div class="slide-item-content">
+                <div class="slide-item content_left">
+                    <div class="image-layer" style="background-image:url('@slide.BackgroundImage')"></div>
+                    <div class="container">
+                        <div class="slider_content">
+                            <h6 class="animate_up d-inline-block">Carola</h6>
+                            <h1 class="animate_left">@Html.Raw(slide.Title)</h1>
+                            <p class="description animate_right">@slide.Description</p>
+                            <div class="button_all animate_down">
+                                <a asp-controller="Cars" asp-action="Index" class="btn-style-four animated">Araçları Keşfet</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>

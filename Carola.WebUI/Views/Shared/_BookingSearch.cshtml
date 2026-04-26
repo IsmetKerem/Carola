@@ -1,0 +1,131 @@
+@model List<Carola.DtoLayer.LocationDtos.ResultLocationDto>
+
+<section class="booking-section home-three">
+    <div class="container">
+        <div class="filter-wrapper">
+            <div class="filter-group">
+                <form asp-controller="Cars" asp-action="Index" method="get">
+                    <div class="filter-area">
+                        <div class="row">
+
+                            <!-- Lokasyon (alış noktası) -->
+                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
+                                <div class="single-search-box">
+                                    <div class="icon"><i class="icon-24"></i></div>
+                                    <div class="searchbox-input">
+                                        <label>Alış Noktası</label>
+                                        <div class="custom-select-dropdown">
+                                            <div class="select-input">
+                                                <input type="text" readonly id="locationDisplay" value="Tüm Lokasyonlar" />
+                                                <input type="hidden" name="locationId" id="locationId" value="" />
+                                                <i class="fas fa-angle-down"></i>
+                                            </div>
+                                            <div class="custom-select-wrap">
+                                                <div class="custom-select-search-area">
+                                                    <i class="fas fa-magnifying-glass"></i>
+                                                    <input type="text" placeholder="Lokasyon ara..." />
+                                                </div>
+                                                <ul class="option-list">
+                                                    <li onclick="selectLocation('', 'Tüm Lokasyonlar')">
+                                                        <div class="destination">
+                                                            <h6>Tüm Lokasyonlar</h6>
+                                                            <p>Filtreleme yapma</p>
+                                                        </div>
+                                                    </li>
+                                                    @foreach (var location in Model)
+                                                    {
+                                                        <li onclick="selectLocation('@location.LocationId', '@location.LocationName')">
+                                                            <div class="destination">
+                                                                <h6>@location.LocationName</h6>
+                                                                <p>@location.City</p>
+                                                            </div>
+                                                            <div class="tour">
+                                                                <span><i class="fas fa-map-marker-alt"></i></span>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alış Tarihi -->
+                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
+                                <div class="single-search-box">
+                                    <div class="icon"><i class="icon-25"></i></div>
+                                    <div class="searchbox-input">
+                                        <label>Alış Tarihi</label>
+                                        <div class="custom-select-dropdown">
+                                            <div class="select-input">
+                                                <input type="date" name="pickupDate" id="pickupDate"
+                                                       value="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- İade Tarihi -->
+                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
+                                <div class="single-search-box">
+                                    <div class="icon"><i class="icon-26"></i></div>
+                                    <div class="searchbox-input">
+                                        <label>İade Tarihi</label>
+                                        <div class="custom-select-dropdown">
+                                            <div class="select-input">
+                                                <input type="date" name="returnDate" id="returnDate"
+                                                       value="@DateTime.Today.AddDays(3).ToString("yyyy-MM-dd")"
+                                                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Yolcu sayısı -->
+                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
+                                <div class="single-search-box">
+                                    <div class="icon"><i class="icon-27"></i></div>
+                                    <div class="searchbox-input">
+                                        <label>Yolcu Sayısı</label>
+                                        <div class="custom-select-dropdown">
+                                            <div class="select-input">
+                                                <select name="seatCount" style="border:none;background:transparent;width:100%;padding:8px 0;outline:none">
+                                                    <option value="">Farketmez</option>
+                                                    <option value="2">2 kişi</option>
+                                                    <option value="4">4 kişi</option>
+                                                    <option value="5">5 kişi</option>
+                                                    <option value="7">7 kişi</option>
+                                                    <option value="9">9+ kişi</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <button type="submit"><i class="fas fa-search me-2"></i> Müsait Araçları Göster</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function selectLocation(id, name) {
+        document.getElementById('locationId').value = id;
+        document.getElementById('locationDisplay').value = name;
+        document.querySelector('.custom-select-dropdown.open')?.classList.remove('open');
+    }
+
+    document.getElementById('pickupDate')?.addEventListener('change', function () {
+        const pickup = new Date(this.value);
+        pickup.setDate(pickup.getDate() + 1);
+        document.getElementById('returnDate').min = pickup.toISOString().split('T')[0];
+    });
+</script>

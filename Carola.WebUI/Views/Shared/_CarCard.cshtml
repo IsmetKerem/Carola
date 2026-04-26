@@ -1,0 +1,40 @@
+@model Carola.DtoLayer.CarDtos.ResultCarDto
+
+<div class="single-popular-car-block style-three">
+    <div class="single-popular-car-image">
+        <a asp-controller="Cars" asp-action="Detail" asp-route-id="@Model.CarId">
+            <img src="@Model.ImageUrl" alt="@Model.BrandName @Model.Model"
+                 onerror="this.src='/site-assets/images/popular-car/popular-car-1.jpg'"
+                 style="width:100%;height:240px;object-fit:cover">
+        </a>
+        <div class="single-popular-car-rent-per-day">
+            <span>@Model.DailyPrice.ToString("N0") ₺</span> / Gün
+        </div>
+    </div>
+
+    <div class="single-popular-car-content">
+        <div class="single-popular-car-rating">
+            <i class="icon-9"></i> 4.8
+        </div>
+
+        <h5 class="single-popular-car-title">
+            <a asp-controller="Cars" asp-action="Detail" asp-route-id="@Model.CarId">
+                @Model.BrandName @Model.Model
+            </a>
+        </h5>
+
+        <small class="text-muted d-block mb-2">@Model.CategoryName · @Model.ModelYear</small>
+
+        <ul class="single-popular-car-info">
+            <li><i class="icon-6"></i>Yakıt: @Model.FuelType</li>
+            <li><i class="icon-7"></i>Bagaj: @Model.LuggageCapacity bavul</li>
+            <li><i class="icon-8"></i>Yolcu: @Model.SeatCount kişi</li>
+        </ul>
+
+        <div class="single-popular-car-book-btn">
+            <a asp-controller="Cars" asp-action="Detail" asp-route-id="@Model.CarId" class="btn-style-three">
+                Detay & Kirala
+            </a>
+        </div>
+    </div>
+</div>

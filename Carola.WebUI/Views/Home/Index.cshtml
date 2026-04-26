@@ -1,31 +1,16 @@
-﻿@model List<Carola.DtoLayer.BrandDtos.ResultBrandDto>
+@model Carola.WebUI.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Anasayfa";
+}
 
-<div class="container mt-5">
-    <h1>🎉 Carola Brand Test</h1>
-    <p>Eğer aşağıda markalar listeleniyorsa, katmanlı mimari çalışıyor demektir!</p>
+@await Html.PartialAsync("_Slider", Model.Sliders)
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Marka Adı</th>
-            <th>Logo</th>
-            <th>Öne Çıkan</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var brand in Model)
-        {
-            <tr>
-                <td>@brand.BrandId</td>
-                <td>@brand.BrandName</td>
-                <td>@brand.LogoUrl</td>
-                <td>@(brand.Status ? "✅" : "❌")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+@await Html.PartialAsync("_BookingSearch", Model.Locations)
 
-    <hr/>
-    <p>Toplam @Model.Count öne çıkan marka bulundu.</p>
-</div>
+@await Html.PartialAsync("_CarTypes", Model.Categories)
+@await Html.PartialAsync("_WhyUs", Model.WhyUsItems)
+@await Html.PartialAsync("_BrandsMarquee", Model.AllBrands)
+@await Html.PartialAsync("_FeaturedCars", Model.FeaturedCars)
+@await Html.PartialAsync("_Brands", Model.FeaturedBrands)
+@await Html.PartialAsync("_Video")
+@await Html.PartialAsync("_Locations", Model.Locations)

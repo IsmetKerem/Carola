@@ -1,0 +1,12 @@
+@model Carola.DtoLayer.CarDtos.GetByIdCarDto
+@{
+    ViewData["Title"] = $"{Model.BrandName} {Model.Model}";
+}
+
+<section style="padding:120px 0;text-align:center">
+    <div class="container">
+        <h1>@Model.BrandName @Model.Model</h1>
+        <p class="lead">Detay sayfası bir sonraki adımda yazılacak (Sprint 6C).</p>
+        <p>Fiyat: <strong>@Model.DailyPrice.ToString("N0") ₺ / Gün</strong></p>
+    </div>
+</section>

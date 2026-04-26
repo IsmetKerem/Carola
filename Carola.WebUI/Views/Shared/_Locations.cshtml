@@ -1,0 +1,34 @@
+@model List<Carola.DtoLayer.LocationDtos.ResultLocationDto>
+
+<section class="services-section pt_120 pb_90">
+    <div class="container">
+        <div class="section-title centred mb_60">
+            <span class="sub-title">Şubelerimiz</span>
+            <h2 class="title">Top Places We Serve</h2>
+        </div>
+
+        <div class="row">
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center text-muted py-5">
+                    <p>Henüz lokasyon eklenmemiş.</p>
+                </div>
+            }
+
+            @foreach (var location in Model)
+            {
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                    <div class="services-block-one">
+                        <h6 class="service-title">
+                            <a href="#">@location.City, @location.LocationName</a>
+                        </h6>
+                        <div class="services-iamge">
+                            <img src="@location.ImageUrl" alt="@location.LocationName"
+                                 onerror="this.src='https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop&q=80'">
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

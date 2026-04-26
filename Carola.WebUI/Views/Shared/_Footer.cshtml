@@ -1,0 +1,67 @@
+<footer class="main_footer home-three">
+    <div class="container">
+        <div class="footer-top-outer">
+            <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                    <div class="footer_widget footer_about_widget">
+                        <figure class="footer_widget_logo">
+                            <a asp-controller="Home" asp-action="Index">
+                                <img src="~/site-assets/images/footer-logo.png" alt="Carola">
+                            </a>
+                        </figure>
+                        <h6><strong>Bizi Takip Edin:</strong></h6>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-square-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-square-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                    <div class="footer_widget footer_resources_widget">
+                        <h4 class="footer_widget_title">Hızlı Linkler</h4>
+                        <ul class="resources_page_list">
+                            <li><a asp-controller="Home" asp-action="Index">Anasayfa</a></li>
+                            <li><a asp-controller="Cars" asp-action="Index">Araçlar</a></li>
+                            <li><a asp-controller="Home" asp-action="About">Hakkımızda</a></li>
+                            <li><a asp-controller="Home" asp-action="Contact">İletişim</a></li>
+                            <li><a asp-controller="Booking" asp-action="Index">Hemen Kirala</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
+                    <div class="footer_widget footer_community_widget">
+                        <h4 class="footer_widget_title">Hizmetler</h4>
+                        <ul class="community_page_list">
+                            <li><a href="#">Şehiriçi Kiralama</a></li>
+                            <li><a href="#">Havalimanı Teslim</a></li>
+                            <li><a href="#">Uzun Dönem</a></li>
+                            <li><a href="#">Filo Çözümleri</a></li>
+                            <li><a href="#">Kurumsal</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="footer_widget footer_contact_widget">
+                        <h4 class="footer_widget_title">İletişim</h4>
+                        <p>İstanbul Havalimanı, Tayakadın, Terminal Cd., 34283 Arnavutköy/İstanbul</p>
+                        <ul class="footer-info-list">
+                            <li><a href="mailto:info@carola.com">info@carola.com</a></li>
+                            <li><a href="tel:+908508404848">+90 850 840 48 48</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom-outer">
+            <div class="copyright">
+                Copyright &copy; @DateTime.Now.Year &nbsp;
+                <a asp-controller="Home" asp-action="Index">Carola</a>, Inc. Tüm hakları saklıdır.
+            </div>
+        </div>
+    </div>
+</footer>

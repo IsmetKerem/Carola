@@ -1,93 +1,147 @@
 @model Carola.DtoLayer.CustomerDtos.GetByIdCustomerDto
+@using Carola.EntityLayer.Enums
 @{
     ViewData["Title"] = $"Müşteri #{Model.CustomerId}";
+    var reservations = ViewBag.CustomerReservations as List<Carola.DtoLayer.ReservationDtos.ResultReservationDto>
+                       ?? new List<Carola.DtoLayer.ReservationDtos.ResultReservationDto>();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">@Model.FirstName @Model.LastName</h4>
+    <h4 class="mb-0">Müşteri Detayı</h4>
     <a asp-action="Index" class="btn btn-link text-decoration-none">
         <i class="bi bi-arrow-left"></i> Listeye Dön
     </a>
 </div>
 
 <div class="row g-4">
-
-    <div class="col-lg-7">
-        <div class="data-card">
-            <div class="data-card-header">
-                <h5 class="data-card-title">Müşteri Bilgileri</h5>
-            </div>
-            <div class="p-4">
-
-                <h6 class="text-muted text-uppercase small mb-3" style="letter-spacing:0.5px">Kişisel</h6>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Ad:</div>
-                    <div class="col-sm-8"><strong>@Model.FirstName</strong></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Soyad:</div>
-                    <div class="col-sm-8"><strong>@Model.LastName</strong></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Doğum Tarihi:</div>
-                    <div class="col-sm-8">@Model.BirthDate.ToString("dd MMMM yyyy")</div>
-                </div>
-
-                <hr/>
-                <h6 class="text-muted text-uppercase small mb-3" style="letter-spacing:0.5px">İletişim</h6>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Email:</div>
-                    <div class="col-sm-8"><a href="mailto:@Model.Email">@Model.Email</a></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Telefon:</div>
-                    <div class="col-sm-8"><a href="tel:@Model.Phone">@Model.Phone</a></div>
-                </div>
-
-                <hr/>
-                <h6 class="text-muted text-uppercase small mb-3" style="letter-spacing:0.5px">Ehliyet Bilgileri</h6>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Ehliyet No:</div>
-                    <div class="col-sm-8">@Model.DriverLicenseNumber</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Ehliyet Sınıfı:</div>
-                    <div class="col-sm-8"><span class="status-badge active">@Model.DriverLicenseClass</span></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 text-muted">Veriliş Tarihi:</div>
-                    <div class="col-sm-8">@Model.DriverLicenseIssueDate.ToString("dd MMMM yyyy")</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- SOL: Müşteri bilgileri -->
     <div class="col-lg-5">
         <div class="data-card">
             <div class="data-card-header">
-                <h5 class="data-card-title">Yüklenen Ehliyet Görseli</h5>
+                <h5 class="data-card-title">Kişisel Bilgiler</h5>
             </div>
-            <div class="p-4 text-center">
+            <div class="p-4">
+                <div class="text-center mb-4">
+                    <div style="width:80px;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);
+                                border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+                                color:white;font-size:32px;font-weight:600">
+                        @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+                    </div>
+                    <h5 class="mt-3 mb-0">@Model.FirstName @Model.LastName</h5>
+                    <small class="text-muted">Müşteri ID: #@Model.CustomerId</small>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-5 text-muted small">Email:</div>
+                    <div class="col-7"><a href="mailto:@Model.Email">@Model.Email</a></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-5 text-muted small">Telefon:</div>
+                    <div class="col-7">@Model.Phone</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-5 text-muted small">Doğum Tarihi:</div>
+                    <div class="col-7">@Model.BirthDate.ToString("dd MMMM yyyy")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-card mt-3">
+            <div class="data-card-header">
+                <h5 class="data-card-title">Ehliyet Bilgileri</h5>
+            </div>
+            <div class="p-4">
+                <div class="row mb-3">
+                    <div class="col-5 text-muted small">Ehliyet No:</div>
+                    <div class="col-7"><code>@Model.DriverLicenseNumber</code></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-5 text-muted small">Sınıf:</div>
+                    <div class="col-7"><span class="badge bg-secondary">@Model.DriverLicenseClass</span></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-5 text-muted small">Veriliş Tarihi:</div>
+                    <div class="col-7">@Model.DriverLicenseIssueDate.ToString("dd MMMM yyyy")</div>
+                </div>
+
                 @if (!string.IsNullOrWhiteSpace(Model.LicenseImageUrl))
                 {
-                    <img src="@Model.LicenseImageUrl" alt="Ehliyet"
-                         onerror="this.src='https://via.placeholder.com/400x250?text=Görsel+Bulunamadı'"
-                         style="max-width:100%;border-radius:8px;border:1px solid #e5e7eb" />
-                    <div class="mt-3">
-                        <a href="@Model.LicenseImageUrl" target="_blank" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-arrows-fullscreen"></i> Tam Boyut
-                        </a>
-                    </div>
-                }
-                else
-                {
-                    <div class="text-muted py-5">
-                        <i class="bi bi-image" style="font-size:48px;opacity:0.3"></i>
-                        <p class="mt-2 mb-0">Ehliyet görseli yüklenmemiş.</p>
+                    <hr/>
+                    <div class="text-center">
+                        <small class="text-muted d-block mb-2">Yüklenen Ehliyet Görseli:</small>
+                        <img src="@Model.LicenseImageUrl" alt="Ehliyet"
+                             onerror="this.style.display='none'"
+                             style="max-width:100%;border-radius:8px;border:1px solid #e5e7eb" />
                     </div>
                 }
             </div>
         </div>
     </div>
 
+    <!-- SAĞ: Rezervasyon geçmişi -->
+   <div class="col-lg-7">
+    <div class="data-card">
+        <div class="data-card-header">
+            <h5 class="data-card-title">Rezervasyon Geçmişi (@reservations.Count)</h5>
+        </div>
+
+        @if (!reservations.Any())
+        {
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-calendar-x" style="font-size:32px"></i>
+                <p class="mb-0 mt-2">Bu müşterinin henüz rezervasyonu yok.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Araç</th>
+                            <th>Tarih</th>
+                            <th>Tutar</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in reservations)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Reservation" asp-action="Detail" asp-route-id="@r.ReservationId" class="text-decoration-none">
+                                        #@r.ReservationId
+                                    </a>
+                                </td>
+                                <td>
+                                    <strong>@r.BrandName</strong> <small class="text-muted">@r.CarModel</small>
+                                </td>
+                                <td class="small">
+                                    @r.PickupDate.ToString("dd.MM.yyyy") <i class="bi bi-arrow-right"></i> @r.ReturnDate.ToString("dd.MM.yyyy")
+                                </td>
+                                <td><strong>@r.TotalPrice.ToString("N0") ₺</strong></td>
+                                <td>
+                                    @if (r.Status == ReservationStatus.Pending) { <span class="status-badge pending">Bekliyor</span> }
+                                    else if (r.Status == ReservationStatus.Approved) { <span class="status-badge active">Onaylandı</span> }
+                                    else if (r.Status == ReservationStatus.Rejected) { <span class="status-badge inactive">Reddedildi</span> }
+                                    else if (r.Status == ReservationStatus.Completed) { <span class="status-badge active">Tamamlandı</span> }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            var filteredSum = reservations
+                .Where(x => x.Status == ReservationStatus.Approved || x.Status == ReservationStatus.Completed)
+                .Sum(x => x.TotalPrice);
+
+            <div class="border-top p-3 d-flex justify-content-between align-items-center bg-light">
+                <span class="text-muted small">Toplam onaylanan harcama:</span>
+                <strong class="text-primary">@filteredSum.ToString("N2") ₺</strong>
+            </div>
+        }
+    </div>
+</div>
 </div>

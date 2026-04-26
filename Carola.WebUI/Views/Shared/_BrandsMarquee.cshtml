@@ -1,0 +1,17 @@
+@model List<Carola.DtoLayer.BrandDtos.ResultBrandDto>
+
+<section class="brand-section-2 home-three">
+    <div class="container-fulid">
+        <div class="brand-outer-box-2">
+            @foreach (var brand in Model)
+            {
+                <div class="single-brand-item-2">
+                    <div class="brand-image">
+                        <img src="@brand.LogoUrl" alt="@brand.BrandName"
+                             onerror="this.src='/site-assets/images/brands/brand-1.png'">
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

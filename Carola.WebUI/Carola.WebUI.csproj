@@ -26,6 +26,7 @@
       <Folder Include="Areas\Admin\Data\" />
       <Folder Include="wwwroot\admin-assets\images\" />
       <Folder Include="wwwroot\admin-assets\js\" />
+      <Folder Include="wwwroot\site-assets\" />
     </ItemGroup>
 
 </Project>

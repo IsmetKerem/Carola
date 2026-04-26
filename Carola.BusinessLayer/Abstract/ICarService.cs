@@ -1,4 +1,5 @@
 using Carola.DtoLayer.CarDtos;
+using Carola.DtoLayer.Common;
 
 namespace Carola.BusinessLayer.Abstract
 {
@@ -10,5 +11,7 @@ namespace Carola.BusinessLayer.Abstract
         Task<List<ResultCarDto>> TGetAvailableCarsBetweenDatesAsync(DateTime start, DateTime end);
         Task TCreateCarAsync(CreateCarDto dto);
         Task TUpdateCarAsync(UpdateCarDto dto);
+        Task<PagedResult<ResultCarDto>> TGetFilteredCarsAsync(CarFilterDto filter);
+        Task<decimal> TGetMaxDailyPriceAsync();
     }
 }

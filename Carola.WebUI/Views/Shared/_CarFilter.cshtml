@@ -1,0 +1,159 @@
+@model Carola.WebUI.Models.CarsListViewModel
+
+<form method="get" asp-controller="Cars" asp-action="Index">
+
+    @if (Model.Filter.PickupDate.HasValue)
+    {
+        <input type="hidden" name="pickupDate" value="@Model.Filter.PickupDate.Value.ToString("yyyy-MM-dd")" />
+    }
+    @if (Model.Filter.ReturnDate.HasValue)
+    {
+        <input type="hidden" name="returnDate" value="@Model.Filter.ReturnDate.Value.ToString("yyyy-MM-dd")" />
+    }
+
+    <div class="product-sidebar mr_30">
+
+        <!-- Arama -->
+        <div class="sidebar-search-widget">
+            <h3 class="sidebar-widget-title">Araç Ara</h3>
+            <div class="sidebar-search-box">
+                <input type="text" name="searchTerm" value="@Model.Filter.SearchTerm" placeholder="BMW, Mercedes..." />
+                <button type="submit"><i class="icon-18"></i></button>
+            </div>
+        </div>
+
+        <!-- Marka / Kategori / Yakıt / Vites Dropdown -->
+        <div class="sidebar-select-car-widget">
+            <h3 class="sidebar-widget-title">Filtrele</h3>
+            <div class="filter-box">
+
+                <!-- Marka -->
+                <div class="custom-select">
+                    <select name="brandId">
+                        <option value="">Tüm Markalar</option>
+                        @foreach (var brand in Model.Brands)
+                        {
+                            if (Model.Filter.BrandId == brand.BrandId)
+                            {
+                                <option value="@brand.BrandId" selected>@brand.BrandName</option>
+                            }
+                            else
+                            {
+                                <option value="@brand.BrandId">@brand.BrandName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <!-- Kategori -->
+                <div class="custom-select">
+                    <select name="categoryId">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            if (Model.Filter.CategoryId == cat.CategoryId)
+                            {
+                                <option value="@cat.CategoryId" selected>@cat.CategoryName</option>
+                            }
+                            else
+                            {
+                                <option value="@cat.CategoryId">@cat.CategoryName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <!-- Yakıt -->
+                <div class="custom-select">
+                    <select name="fuelType">
+                        <option value="">Tüm Yakıt Tipleri</option>
+                        @foreach (var fuel in Model.FuelTypes)
+                        {
+                            if (Model.Filter.FuelType == fuel)
+                            {
+                                <option value="@fuel" selected>@fuel</option>
+                            }
+                            else
+                            {
+                                <option value="@fuel">@fuel</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <!-- Vites -->
+                <div class="custom-select">
+                    <select name="transmissionType">
+                        <option value="">Tüm Vitesler</option>
+                        @foreach (var trans in Model.TransmissionTypes)
+                        {
+                            if (Model.Filter.TransmissionType == trans)
+                            {
+                                <option value="@trans" selected>@trans</option>
+                            }
+                            else
+                            {
+                                <option value="@trans">@trans</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="sidebar-filter-widget">
+            <h3 class="sidebar-widget-title">Fiyat Aralığı</h3>
+            <div class="price-range-slider">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="small text-muted">Min ₺</label>
+                        <input type="number" class="form-control" name="minPrice"
+                               value="@Model.Filter.MinPrice" placeholder="0" min="0" />
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Max ₺</label>
+                        <input type="number" class="form-control" name="maxPrice"
+                               value="@Model.Filter.MaxPrice" placeholder="@Model.MaxAvailablePrice" min="0" />
+                    </div>
+                </div>
+                <p class="range-value mt-3 mb-0">
+                    <small class="text-muted">Sistem max: @Model.MaxAvailablePrice.ToString("N0") ₺</small>
+                </p>
+            </div>
+        </div>
+
+        <div class="sidebar-capacity-widget">
+            <h3 class="sidebar-widget-title">Yolcu Kapasitesi</h3>
+            <ul class="capacity-list">
+                @foreach (var seats in new[] { 2, 4, 5, 7, 9 })
+                {
+                    var isChecked = Model.Filter.SeatCount == seats ? "checked" : "";
+                    <li>
+                        <div class="check-box">
+                            <input class="check" type="radio" id="seat-@seats" name="seatCount" value="@seats" @isChecked />
+                            <label for="seat-@seats">@seats+ kişi</label>
+                        </div>
+                    </li>
+                }
+                <li>
+                    <div class="check-box">
+                        <input class="check" type="radio" id="seat-any" name="seatCount" value=""
+                               @(Model.Filter.SeatCount == null ? "checked" : "") />
+                        <label for="seat-any">Farketmez</label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn-style-four">
+                <i class="fas fa-filter"></i> Filtrele
+            </button>
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-times"></i> Filtreleri Temizle
+            </a>
+        </div>
+
+    </div>
+</form>
