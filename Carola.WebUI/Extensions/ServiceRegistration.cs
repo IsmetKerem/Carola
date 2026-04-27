@@ -14,6 +14,7 @@ using Carola.DataAccessLayer.Repositories.ReservationRepository;
 using Carola.DataAccessLayer.Repositories.SliderRepository;
 using Carola.DataAccessLayer.Repositories.VideoRepository;
 using Carola.DataAccessLayer.Repositories.WhyUsRepository;
+using Carola.WebUI.Services;
 
 namespace Carola.WebUI.Extensions
 {
@@ -79,6 +80,9 @@ namespace Carola.WebUI.Extensions
             {
                 client.Timeout = TimeSpan.FromSeconds(60); 
             });
+            // Mail Service
+            services.AddScoped<IMailService, SmtpMailService>();
+            services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
             return services;
         }

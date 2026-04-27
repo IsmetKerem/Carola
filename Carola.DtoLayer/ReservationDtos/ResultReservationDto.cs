@@ -1,4 +1,3 @@
-
 using Carola.EntityLayer.Enums;
 
 namespace Carola.DtoLayer.ReservationDtos
@@ -17,11 +16,15 @@ namespace Carola.DtoLayer.ReservationDtos
         public int PickupLocationId { get; set; }
         public int ReturnLocationId { get; set; }
 
-        // Gösterim için
         public string CarModel { get; set; }
         public string BrandName { get; set; }
         public string CustomerFullName { get; set; }
         public string PickupLocationName { get; set; }
         public string ReturnLocationName { get; set; }
+
+        public string? CustomerFirstName { get; set; }
+        public string? CustomerLastName { get; set; }
+        public string? CustomerEmail { get; set; }
+        public string? CustomerPhone { get; set; }
     }
 }

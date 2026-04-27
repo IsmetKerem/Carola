@@ -1,0 +1,146 @@
+@model Carola.WebUI.Models.ReservationApprovedMailModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Rezervasyon Onaylandı</title>
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f3f4f6;padding:30px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" border="0"
+                       style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#ff3838 0%,#cc0000 100%);padding:40px 30px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:32px;letter-spacing:1px;">CAROLA</h1>
+                            <p style="color:#ffffff;margin:8px 0 0;font-size:14px;opacity:0.9;">Premium Araç Kiralama</p>
+                        </td>
+                    </tr>
+
+                    <!-- BODY -->
+                    <tr>
+                        <td style="padding:40px 30px;">
+
+                            <h2 style="color:#10b981;margin:0 0 16px;font-size:24px;">
+                                ✅ Rezervasyonunuz Onaylandı!
+                            </h2>
+
+                            <p style="color:#374151;line-height:1.6;font-size:15px;margin:0 0 20px;">
+                                Merhaba <strong>@Model.CustomerFullName</strong>,
+                            </p>
+
+                            <p style="color:#374151;line-height:1.6;font-size:15px;margin:0 0 25px;">
+                                <strong>@Model.CarBrandModel</strong> aracı için yapmış olduğunuz rezervasyon ekibimizce onaylanmıştır.
+                                Aşağıdaki tarihlerde aracınızı belirttiğiniz lokasyondan teslim alabilirsiniz.
+                            </p>
+
+                            <!-- ARAÇ BİLGİLERİ KARTI -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                                   style="background:#f9fafb;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:25px;">
+                                <tr>
+                                    <td style="padding:24px;">
+
+                                        <h3 style="margin:0 0 16px;color:#1f2937;font-size:16px;">📋 Rezervasyon Detayları</h3>
+
+                                        <table width="100%" cellpadding="6" cellspacing="0" border="0" style="font-size:14px;color:#374151;">
+                                            <tr>
+                                                <td width="40%" style="color:#6b7280;">Araç:</td>
+                                                <td><strong>@Model.CarBrandModel</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#6b7280;">Alış Tarihi:</td>
+                                                <td><strong>@Model.PickupDate.ToString("dd MMMM yyyy")</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#6b7280;">İade Tarihi:</td>
+                                                <td><strong>@Model.ReturnDate.ToString("dd MMMM yyyy")</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#6b7280;">Süre:</td>
+                                                <td><strong>@Model.TotalDays gün</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#6b7280;">Alış Lokasyonu:</td>
+                                                <td><strong>@Model.PickupLocation</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#6b7280;">İade Lokasyonu:</td>
+                                                <td><strong>@Model.ReturnLocation</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color:#6b7280;border-top:1px solid #e5e7eb;padding-top:12px;">
+                                                    <strong style="color:#1f2937;">TOPLAM:</strong>
+                                                </td>
+                                                <td style="border-top:1px solid #e5e7eb;padding-top:12px;">
+                                                    <strong style="color:#ff3838;font-size:18px;">@Model.TotalPrice.ToString("N2") ₺</strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- KUPON BANNER (embedded image) -->
+                            <h3 style="margin:30px 0 14px;color:#1f2937;font-size:16px;text-align:center;">
+                                🎁 Bir Sonraki Kiralamanız İçin Hediye Kuponu
+                            </h3>
+
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+                                <tr>
+                                    <td align="center">
+                                        <img src="cid:coupon-image" alt="%30 İndirim Kuponu"
+                                             style="max-width:100%;height:auto;border-radius:10px;display:block;" />
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="color:#374151;font-size:13px;text-align:center;line-height:1.6;margin:0 0 30px;">
+                                Bir sonraki rezervasyonunuzda kullanabileceğiniz <strong>%30 indirim kuponu</strong>nuz hesabınıza tanımlanmıştır.
+                                <br/>Kupon kodu: <strong style="color:#ff3838;font-size:16px;letter-spacing:2px;">@Model.CouponCode</strong>
+                            </p>
+
+                            <!-- CTA -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="center" style="padding:10px 0 30px;">
+                                        <a href="https://carola.com" style="background:#ff3838;color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:8px;font-weight:600;display:inline-block;font-size:14px;">
+                                            Hesabım & Geçmiş Rezervasyonlar
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <hr style="border:none;border-top:1px solid #e5e7eb;margin:25px 0;" />
+
+                            <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0;">
+                                <strong>Teslim Almak İçin:</strong><br/>
+                                Belirttiğiniz alış lokasyonundan, alış tarihinde <strong>nüfus cüzdanı</strong> ve <strong>orijinal ehliyetinizi</strong> getirerek aracınızı teslim alabilirsiniz.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="background:#1f2937;padding:25px 30px;text-align:center;">
+                            <p style="color:#d1d5db;font-size:13px;margin:0 0 8px;">
+                                <strong>CAROLA</strong> — Premium Araç Kiralama
+                            </p>
+                            <p style="color:#9ca3af;font-size:12px;margin:0;">
+                                © @DateTime.Now.Year Carola Inc. Tüm hakları saklıdır.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

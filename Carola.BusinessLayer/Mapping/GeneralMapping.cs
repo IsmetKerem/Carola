@@ -63,16 +63,20 @@ namespace Carola.BusinessLayer.Mapping
 
             // Reservation — navigation'lar
             CreateMap<Reservation, ResultReservationDto>()
-                .ForMember(d => d.CarModel, o => o.MapFrom(s => s.Car != null ? s.Car.Model : ""))
-                .ForMember(d => d.BrandName, o => o.MapFrom(s => s.Car != null && s.Car.Brand != null ? s.Car.Brand.BrandName : ""))
-                .ForMember(d => d.CustomerFullName, o => o.MapFrom(s => s.Customer != null ? s.Customer.FirstName + " " + s.Customer.LastName : ""))
+                .ForMember(d => d.CarModel,           o => o.MapFrom(s => s.Car != null ? s.Car.Model : ""))
+                .ForMember(d => d.BrandName,          o => o.MapFrom(s => s.Car != null && s.Car.Brand != null ? s.Car.Brand.BrandName : ""))
+                .ForMember(d => d.CustomerFullName,   o => o.MapFrom(s => s.Customer != null ? s.Customer.FirstName + " " + s.Customer.LastName : ""))
                 .ForMember(d => d.PickupLocationName, o => o.MapFrom(s => s.PickupLocation != null ? s.PickupLocation.LocationName : ""))
                 .ForMember(d => d.ReturnLocationName, o => o.MapFrom(s => s.ReturnLocation != null ? s.ReturnLocation.LocationName : ""))
+                .ForMember(d => d.CustomerFirstName,  o => o.MapFrom(s => s.Customer != null ? s.Customer.FirstName : ""))
+                .ForMember(d => d.CustomerLastName,   o => o.MapFrom(s => s.Customer != null ? s.Customer.LastName : ""))
+                .ForMember(d => d.CustomerEmail,      o => o.MapFrom(s => s.Customer != null ? s.Customer.Email : ""))
+                .ForMember(d => d.CustomerPhone,      o => o.MapFrom(s => s.Customer != null ? s.Customer.Phone : ""))
                 .ReverseMap();
+
             CreateMap<Reservation, CreateReservationDto>().ReverseMap();
             CreateMap<Reservation, UpdateReservationDto>().ReverseMap();
             CreateMap<Reservation, GetByIdReservationDto>().ReverseMap();
-
             // Comment
             CreateMap<Comment, ResultCommentDto>().ReverseMap();
             CreateMap<Comment, CreateCommentDto>().ReverseMap();
@@ -102,6 +106,8 @@ namespace Carola.BusinessLayer.Mapping
             CreateMap<Customer, CreateCustomerDto>().ReverseMap();
             CreateMap<Customer, UpdateCustomerDto>().ReverseMap();
             CreateMap<Customer, GetByIdCustomerDto>().ReverseMap();
+            
+            
         }
     }
 }
