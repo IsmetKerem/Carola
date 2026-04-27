@@ -1,0 +1,539 @@
+@model Carola.WebUI.Models.BookingViewModel
+@{
+    ViewData["Title"] = "Rezervasyon";
+}
+
+<!-- Breadcrumb -->
+<section class="breadcrumb-section" style="background-image: url('/site-assets/images/background/inner-banner-bg-3.png');">
+    <div class="container">
+        <div class="banner-content">
+            <h1>Rezervasyon</h1>
+            <p class="text-white-50 mt-2">
+                <a asp-controller="Home" asp-action="Index" class="text-white-50">Anasayfa</a>
+                <i class="fas fa-angle-right mx-2"></i>
+                <a asp-controller="Cars" asp-action="Index" class="text-white-50">Araçlar</a>
+                <i class="fas fa-angle-right mx-2"></i>
+                @Model.Car.BrandName @Model.Car.Model
+                <i class="fas fa-angle-right mx-2"></i>
+                Rezervasyon
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="pt_120 pb_120">
+    <div class="container">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Wizard Step Indicator -->
+        <div class="booking-stepper mb-5">
+            <div class="d-flex justify-content-between align-items-center"
+                 style="max-width:700px;margin:0 auto;position:relative">
+                <div class="position-absolute" style="top:24px;left:0;right:0;height:2px;background:#e5e7eb;z-index:0"></div>
+
+                <div class="step-item active" data-step="1" style="z-index:1;text-align:center;flex:1">
+                    <div class="step-circle"
+                         style="width:48px;height:48px;border-radius:50%;background:#ff3838;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">1</div>
+                    <div class="step-label small mt-2 fw-bold">Ehliyet Yükle</div>
+                </div>
+
+                <div class="step-item" data-step="2" style="z-index:1;text-align:center;flex:1">
+                    <div class="step-circle"
+                         style="width:48px;height:48px;border-radius:50%;background:#e5e7eb;color:#6b7280;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">2</div>
+                    <div class="step-label small mt-2 text-muted">İletişim</div>
+                </div>
+
+                <div class="step-item" data-step="3" style="z-index:1;text-align:center;flex:1">
+                    <div class="step-circle"
+                         style="width:48px;height:48px;border-radius:50%;background:#e5e7eb;color:#6b7280;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">3</div>
+                    <div class="step-label small mt-2 text-muted">Özet & Onay</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- ============= SOL: WIZARD ============= -->
+            <div class="col-lg-8">
+
+                <!-- ===== STEP 1: EHLİYET YÜKLE ===== -->
+                <div id="wizard-step-1" class="wizard-step"
+                     style="background:#fff;padding:32px;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)">
+                    <h3 class="mb-2">1. Ehliyet Görselini Yükle</h3>
+                    <p class="text-muted mb-4">
+                        Ehliyetinizin ön yüzünün net bir fotoğrafını yükleyin.
+                        Bilgileriniz <strong>yapay zeka tarafından otomatik</strong> okunacaktır.
+                    </p>
+
+                    <!-- Drag & Drop Upload Alanı -->
+                    <div id="upload-zone"
+                         style="border:2px dashed #cbd5e1;border-radius:12px;padding:60px 20px;text-align:center;background:#f9fafb;cursor:pointer;transition:all .2s"
+                         onclick="document.getElementById('licenseFile').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:48px;color:#9ca3af"></i>
+                        <h5 class="mt-3 mb-2">Ehliyet görselini buraya sürükleyin</h5>
+                        <p class="text-muted mb-0">veya tıklayarak dosya seçin (JPG, PNG — max 5MB)</p>
+                        <input type="file" id="licenseFile" name="licenseFile"
+                               accept="image/jpeg,image/png" style="display:none" />
+                    </div>
+
+                    <!-- Preview & OCR Loading -->
+                    <div id="upload-preview" class="mt-4" style="display:none">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4">
+                                <img id="preview-image" src="" alt="Ehliyet"
+                                     style="width:100%;border-radius:8px;border:1px solid #e5e7eb" />
+                            </div>
+                            <div class="col-md-8">
+                                <div id="ocr-loading" style="display:none">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="spinner-border text-danger" role="status"></div>
+                                        <div>
+                                            <h6 class="mb-1">Yapay zeka ehliyetinizi okuyor...</h6>
+                                            <small class="text-muted">Bu işlem birkaç saniye sürebilir</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="ocr-success" style="display:none">
+                                    <div class="alert alert-success mb-3">
+                                        <i class="fas fa-check-circle"></i>
+                                        <strong>Ehliyet bilgileri başarıyla okundu!</strong>
+                                    </div>
+
+                                    <ul class="list-unstyled mb-0" style="font-size:14px">
+                                        <li class="mb-2"><strong>Ad Soyad:</strong> <span id="ocr-name"></span></li>
+                                        <li class="mb-2"><strong>Doğum Tarihi:</strong> <span id="ocr-birth"></span></li>
+                                        <li class="mb-2"><strong>Ehliyet No:</strong> <span id="ocr-license-no"></span></li>
+                                        <li class="mb-2"><strong>Sınıfı:</strong> <span id="ocr-license-class"></span></li>
+                                        <li class="mb-0"><strong>Veriliş Tarihi:</strong> <span id="ocr-issue-date"></span></li>
+                                    </ul>
+                                </div>
+
+                                <div id="ocr-error" class="alert alert-danger mt-2" style="display:none">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span id="ocr-error-message"></span>
+                                    <hr/>
+                                    <small>Lütfen daha net bir ehliyet görseli yükleyin veya farklı bir fotoğraf deneyin.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-end">
+                            <button type="button" class="btn btn-outline-secondary me-2" onclick="resetUpload()">
+                                <i class="fas fa-redo"></i> Farklı Görsel Yükle
+                            </button>
+                            <button type="button" id="btn-step1-next" class="btn-style-four" disabled
+                                    onclick="goToStep(2)">
+                                Devam Et <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ===== STEP 2: İLETİŞİM BİLGİLERİ ===== -->
+                <div id="wizard-step-2" class="wizard-step" style="display:none;background:#fff;padding:32px;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)">
+                    <h3 class="mb-2">2. İletişim Bilgileri</h3>
+                    <p class="text-muted mb-4">
+                        Rezervasyon onayı bu iletişim bilgilerine gönderilecektir.
+                    </p>
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" id="contact-email" class="form-control form-control-lg"
+                                   placeholder="ornek@email.com" required />
+                            <small id="email-error" class="text-danger" style="display:none">Geçerli bir email girin</small>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Telefon <span class="text-danger">*</span></label>
+                            <input type="tel" id="contact-phone" class="form-control form-control-lg"
+                                   placeholder="0555 123 45 67" required />
+                            <small id="phone-error" class="text-danger" style="display:none">Geçerli bir telefon girin (en az 10 hane)</small>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Notunuz (opsiyonel)</label>
+                            <textarea id="contact-description" class="form-control" rows="3"
+                                      placeholder="Özel istekleriniz veya ek bilgiler..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" onclick="goToStep(1)">
+                            <i class="fas fa-arrow-left"></i> Geri
+                        </button>
+                        <button type="button" class="btn-style-four" onclick="validateAndGoToStep3()">
+                            Özete Geç <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- ===== STEP 3: ÖZET & ONAY ===== -->
+                <div id="wizard-step-3" class="wizard-step" style="display:none;background:#fff;padding:32px;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)">
+                    <h3 class="mb-2">3. Özet & Onay</h3>
+                    <p class="text-muted mb-4">
+                        Bilgilerinizi son bir kez kontrol edin. Onay verdikten sonra rezervasyonunuz admin onayına gönderilecektir.
+                    </p>
+
+                    <!-- Müşteri Bilgileri Özet -->
+                    <div class="mb-4 p-3" style="background:#f9fafb;border-radius:8px">
+                        <h6 class="mb-3"><i class="fas fa-user"></i> Müşteri Bilgileri</h6>
+                        <div class="row small">
+                            <div class="col-sm-4 text-muted">Ad Soyad:</div>
+                            <div class="col-sm-8 mb-2"><strong id="summary-name"></strong></div>
+
+                            <div class="col-sm-4 text-muted">Doğum Tarihi:</div>
+                            <div class="col-sm-8 mb-2" id="summary-birth"></div>
+
+                            <div class="col-sm-4 text-muted">Email:</div>
+                            <div class="col-sm-8 mb-2" id="summary-email"></div>
+
+                            <div class="col-sm-4 text-muted">Telefon:</div>
+                            <div class="col-sm-8 mb-2" id="summary-phone"></div>
+
+                            <div class="col-sm-4 text-muted">Ehliyet No:</div>
+                            <div class="col-sm-8 mb-2" id="summary-license"></div>
+
+                            <div class="col-sm-4 text-muted">Sınıfı:</div>
+                            <div class="col-sm-8" id="summary-license-class"></div>
+                        </div>
+                    </div>
+
+                    <!-- Rezervasyon Bilgileri Özet -->
+                    <div class="mb-4 p-3" style="background:#f9fafb;border-radius:8px">
+                        <h6 class="mb-3"><i class="fas fa-calendar-check"></i> Rezervasyon Detayları</h6>
+                        <div class="row small">
+                            <div class="col-sm-4 text-muted">Araç:</div>
+                            <div class="col-sm-8 mb-2"><strong>@Model.Car.BrandName @Model.Car.Model</strong></div>
+
+                            <div class="col-sm-4 text-muted">Alış:</div>
+                            <div class="col-sm-8 mb-2">
+                                @Model.PickupDate.ToString("dd MMMM yyyy") — @Model.PickupLocation.LocationName
+                            </div>
+
+                            <div class="col-sm-4 text-muted">İade:</div>
+                            <div class="col-sm-8 mb-2">
+                                @Model.ReturnDate.ToString("dd MMMM yyyy") — @Model.ReturnLocation.LocationName
+                            </div>
+
+                            <div class="col-sm-4 text-muted">Süre:</div>
+                            <div class="col-sm-8"><strong>@Model.TotalDays gün</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Onay Kutusu -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="terms-check" />
+                        <label class="form-check-label small" for="terms-check">
+                            <strong>Kira sözleşmesi ve gizlilik koşullarını</strong> okudum, kabul ediyorum.
+                        </label>
+                    </div>
+
+                    <!-- Submit Form (gizli — sunucuya tüm veriyi tek seferde gönderir) -->
+                    <form asp-controller="Booking" asp-action="Complete" method="post" id="finalForm">
+
+                        <!-- Hidden — OCR'dan gelenler -->
+                        <input type="hidden" name="FirstName" id="hidden-firstname" />
+                        <input type="hidden" name="LastName" id="hidden-lastname" />
+                        <input type="hidden" name="BirthDate" id="hidden-birthdate" />
+                        <input type="hidden" name="DriverLicenseNumber" id="hidden-licenseno" />
+                        <input type="hidden" name="DriverLicenseClass" id="hidden-licenseclass" />
+                        <input type="hidden" name="DriverLicenseIssueDate" id="hidden-licenseissuedate" />
+                        <input type="hidden" name="LicenseImageUrl" id="hidden-licenseimage" />
+
+                        <!-- Hidden — manuel girilenler -->
+                        <input type="hidden" name="Email" id="hidden-email" />
+                        <input type="hidden" name="Phone" id="hidden-phone" />
+                        <input type="hidden" name="Description" id="hidden-description" />
+
+                        <!-- Hidden — server-side önceden hidrate edilenler -->
+                        <input type="hidden" name="CarId" value="@Model.CarId" />
+                        <input type="hidden" name="PickupDate" value="@Model.PickupDate.ToString("yyyy-MM-dd")" />
+                        <input type="hidden" name="ReturnDate" value="@Model.ReturnDate.ToString("yyyy-MM-dd")" />
+                        <input type="hidden" name="PickupLocationId" value="@Model.PickupLocationId" />
+                        <input type="hidden" name="ReturnLocationId" value="@Model.ReturnLocationId" />
+                        <input type="hidden" name="TotalPrice" value="@Model.GrandTotal" />
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(2)">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                            <button type="submit" id="btn-submit" class="btn-style-four" disabled>
+                                <i class="fas fa-check"></i> Rezervasyonu Tamamla
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- ============= SAĞ: ÖZET KARTI (sticky) ============= -->
+            <div class="col-lg-4">
+                <div style="position:sticky;top:20px">
+
+                    <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.08)">
+
+                        <img src="@Model.Car.ImageUrl" alt="@Model.Car.Model"
+                             onerror="this.src='/site-assets/images/featured-car/featured-car-19.jpg'"
+                             style="width:100%;height:200px;object-fit:cover">
+
+                        <div class="p-4">
+                            <small class="text-muted">@Model.Car.CategoryName</small>
+                            <h5 class="mb-1">@Model.Car.BrandName @Model.Car.Model</h5>
+                            <small class="text-muted d-block mb-3">@Model.Car.ModelYear · @Model.Car.FuelType · @Model.Car.TransmissionType</small>
+
+                            <hr/>
+
+                            <div class="d-flex justify-content-between mb-2 small">
+                                <span class="text-muted"><i class="far fa-calendar"></i> Alış</span>
+                                <strong>@Model.PickupDate.ToString("dd.MM.yyyy")</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 small">
+                                <span class="text-muted"><i class="far fa-calendar-check"></i> İade</span>
+                                <strong>@Model.ReturnDate.ToString("dd.MM.yyyy")</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 small">
+                                <span class="text-muted"><i class="far fa-clock"></i> Süre</span>
+                                <strong>@Model.TotalDays gün</strong>
+                            </div>
+
+                            <hr/>
+
+                            <div class="d-flex justify-content-between mb-2 small">
+                                <span class="text-muted">Günlük (@Model.Car.DailyPrice.ToString("N0") ₺ × @Model.TotalDays gün)</span>
+                                <strong>@Model.SubTotal.ToString("N2") ₺</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 small">
+                                <span class="text-muted">KDV (%18)</span>
+                                <strong>@Model.Tax.ToString("N2") ₺</strong>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                <strong>Toplam</strong>
+                                <h4 class="mb-0 text-danger">@Model.GrandTotal.ToString("N2") ₺</h4>
+                            </div>
+
+                            <div class="alert alert-light border mt-3 mb-0 small">
+                                <i class="fas fa-info-circle text-primary"></i>
+                                Rezervasyonunuz admin onayı sonrası kesinleşir ve email ile bildirim gönderilir.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<script>
+    // =================================================================
+    // WIZARD KONTROL FONKSIYONLARI
+    // =================================================================
+
+    function goToStep(step) {
+        document.querySelectorAll('.wizard-step').forEach(el => el.style.display = 'none');
+        document.getElementById('wizard-step-' + step).style.display = 'block';
+
+        document.querySelectorAll('.step-item').forEach((el, idx) => {
+            const circle = el.querySelector('.step-circle');
+            const label = el.querySelector('.step-label');
+            const idxStep = idx + 1;
+            if (idxStep < step) {
+                circle.style.background = '#10b981'; circle.style.color = '#fff';
+                circle.innerHTML = '<i class="fas fa-check"></i>';
+                label.classList.remove('text-muted'); label.classList.add('fw-bold');
+            } else if (idxStep === step) {
+                circle.style.background = '#ff3838'; circle.style.color = '#fff';
+                circle.innerHTML = idxStep;
+                label.classList.remove('text-muted'); label.classList.add('fw-bold');
+            } else {
+                circle.style.background = '#e5e7eb'; circle.style.color = '#6b7280';
+                circle.innerHTML = idxStep;
+                label.classList.add('text-muted'); label.classList.remove('fw-bold');
+            }
+        });
+
+        if (step === 3) buildSummary();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetUpload() {
+        document.getElementById('upload-preview').style.display = 'none';
+        document.getElementById('licenseFile').value = '';
+        document.getElementById('btn-step1-next').disabled = true;
+        document.getElementById('ocr-success').style.display = 'none';
+        document.getElementById('ocr-error').style.display = 'none';
+        document.getElementById('ocr-loading').style.display = 'none';
+        window.ocrData = null;
+    }
+
+    function validateAndGoToStep3() {
+        const email = document.getElementById('contact-email').value.trim();
+        const phone = document.getElementById('contact-phone').value.trim().replace(/\D/g, '');
+        let valid = true;
+
+        document.getElementById('email-error').style.display = 'none';
+        document.getElementById('phone-error').style.display = 'none';
+
+        if (!/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(email)) {
+            document.getElementById('email-error').style.display = 'block';
+            valid = false;
+        }
+        if (phone.length < 10) {
+            document.getElementById('phone-error').style.display = 'block';
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        document.getElementById('hidden-email').value = email;
+        document.getElementById('hidden-phone').value = phone;
+        document.getElementById('hidden-description').value = document.getElementById('contact-description').value.trim();
+
+        goToStep(3);
+    }
+
+    function buildSummary() {
+        const o = window.ocrData || {};
+        document.getElementById('summary-name').textContent = ((o.firstName || '-') + ' ' + (o.lastName || '')).trim();
+        document.getElementById('summary-birth').textContent = o.birthDate || '-';
+        document.getElementById('summary-license').textContent = o.driverLicenseNumber || '-';
+        document.getElementById('summary-license-class').textContent = o.driverLicenseClass || '-';
+        document.getElementById('summary-email').textContent = document.getElementById('hidden-email').value;
+        document.getElementById('summary-phone').textContent = document.getElementById('hidden-phone').value;
+
+        document.getElementById('hidden-firstname').value = o.firstName || '';
+        document.getElementById('hidden-lastname').value = o.lastName || '';
+        document.getElementById('hidden-birthdate').value = o.birthDateRaw || '';
+        document.getElementById('hidden-licenseno').value = o.driverLicenseNumber || '';
+        document.getElementById('hidden-licenseclass').value = o.driverLicenseClass || '';
+        document.getElementById('hidden-licenseissuedate').value = o.driverLicenseIssueDateRaw || '';
+        document.getElementById('hidden-licenseimage').value = o.licenseImageUrl || '';
+    }
+
+    document.getElementById('terms-check')?.addEventListener('change', function () {
+        document.getElementById('btn-submit').disabled = !this.checked;
+    });
+
+    // =================================================================
+    // GERÇEK GEMINI OCR — AJAX UPLOAD
+    // =================================================================
+    document.getElementById('licenseFile')?.addEventListener('change', async function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Dosya boyutu 5 MB\'dan büyük olamaz!');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            document.getElementById('preview-image').src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // 2) UI state — loading başlat
+        document.getElementById('upload-preview').style.display = 'block';
+        document.getElementById('ocr-loading').style.display = 'block';
+        document.getElementById('ocr-success').style.display = 'none';
+        document.getElementById('ocr-error').style.display = 'none';
+        document.getElementById('btn-step1-next').disabled = true;
+
+        const formData = new FormData();
+        formData.append('licenseFile', file);
+
+        try {
+            const response = await fetch('@Url.Action("UploadLicense", "Booking")', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            document.getElementById('ocr-loading').style.display = 'none';
+
+            if (!result.success) {
+                document.getElementById('ocr-error').style.display = 'block';
+                document.getElementById('ocr-error-message').textContent = result.errorMessage || 'Bilinmeyen hata oluştu.';
+                return;
+            }
+
+            const fullName = ((result.firstName || '') + ' ' + (result.lastName || '')).trim();
+            document.getElementById('ocr-name').textContent = fullName || '-';
+            document.getElementById('ocr-birth').textContent = formatDate(result.birthDate);
+            document.getElementById('ocr-license-no').textContent = result.driverLicenseNumber || '-';
+            document.getElementById('ocr-license-class').textContent = result.driverLicenseClass || '-';
+            document.getElementById('ocr-issue-date').textContent = formatDate(result.driverLicenseIssueDate);
+
+            window.ocrData = {
+                firstName: result.firstName || '',
+                lastName: result.lastName || '',
+                birthDate: formatDate(result.birthDate),
+                birthDateRaw: toIsoDate(result.birthDate),
+                driverLicenseNumber: result.driverLicenseNumber || '',
+                driverLicenseClass: result.driverLicenseClass || '',
+                driverLicenseIssueDate: formatDate(result.driverLicenseIssueDate),
+                driverLicenseIssueDateRaw: toIsoDate(result.driverLicenseIssueDate),
+                licenseImageUrl: result.licenseImageUrl || ''
+            };
+
+            document.getElementById('ocr-success').style.display = 'block';
+            document.getElementById('btn-step1-next').disabled = false;
+        } catch (err) {
+            console.error('OCR isteği hata:', err);
+            document.getElementById('ocr-loading').style.display = 'none';
+            document.getElementById('ocr-error').style.display = 'block';
+            document.getElementById('ocr-error-message').textContent = 'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.';
+        }
+    });
+
+    function formatDate(isoDate) {
+        if (!isoDate) return '-';
+        const d = new Date(isoDate);
+        if (isNaN(d.getTime())) return '-';
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return day + '.' + month + '.' + year;
+    }
+
+    function toIsoDate(isoDate) {
+        if (!isoDate) return '';
+        const d = new Date(isoDate);
+        if (isNaN(d.getTime())) return '';
+        return d.toISOString().split('T')[0];
+    }
+
+
+    const zone = document.getElementById('upload-zone');
+    if (zone) {
+        ['dragover', 'dragenter'].forEach(ev => zone.addEventListener(ev, e => {
+            e.preventDefault(); zone.style.background = '#f0fdf4'; zone.style.borderColor = '#10b981';
+        }));
+        ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, e => {
+            e.preventDefault(); zone.style.background = '#f9fafb'; zone.style.borderColor = '#cbd5e1';
+        }));
+        zone.addEventListener('drop', e => {
+            const dt = e.dataTransfer;
+            if (dt.files.length) {
+                document.getElementById('licenseFile').files = dt.files;
+                document.getElementById('licenseFile').dispatchEvent(new Event('change'));
+            }
+        });
+    }
+</script>

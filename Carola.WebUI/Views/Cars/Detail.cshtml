@@ -1,12 +1,346 @@
-@model Carola.DtoLayer.CarDtos.GetByIdCarDto
+@model Carola.WebUI.Models.CarDetailViewModel
 @{
-    ViewData["Title"] = $"{Model.BrandName} {Model.Model}";
+    ViewData["Title"] = $"{Model.Car.BrandName} {Model.Car.Model}";
 }
 
-<section style="padding:120px 0;text-align:center">
+<!-- Breadcrumb -->
+<section class="breadcrumb-section" style="background-image: url('/site-assets/images/background/inner-banner-bg-3.png');">
     <div class="container">
-        <h1>@Model.BrandName @Model.Model</h1>
-        <p class="lead">Detay sayfası bir sonraki adımda yazılacak (Sprint 6C).</p>
-        <p>Fiyat: <strong>@Model.DailyPrice.ToString("N0") ₺ / Gün</strong></p>
+        <div class="banner-content">
+            <h1>@Model.Car.BrandName @Model.Car.Model</h1>
+            <p class="text-white-50 mt-2">
+                <a asp-controller="Home" asp-action="Index" class="text-white-50">Anasayfa</a>
+                <i class="fas fa-angle-right mx-2"></i>
+                <a asp-controller="Cars" asp-action="Index" class="text-white-50">Araçlar</a>
+                <i class="fas fa-angle-right mx-2"></i>
+                @Model.Car.Model
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="car-details-section pt_120 pb_120">
+    <div class="container">
+
+        <div class="car-details-outerbox">
+            <div class="car-details-image">
+                <img src="@Model.Car.ImageUrl" alt="@Model.Car.BrandName @Model.Car.Model"
+                     onerror="this.src='/site-assets/images/featured-car/featured-car-19.jpg'"
+                     style="width:100%;max-height:600px;object-fit:cover;border-radius:12px">
+            </div>
+        </div>
+
+        <div class="car-details-info-outer">
+            <div class="row">
+
+                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+                    <div class="car-details-infobox">
+
+                        <!-- Üst — kategori + rating -->
+                        <div class="rating-location-box">
+                            <div class="location">
+                                <i class="icon-49"></i> @Model.Car.CategoryName
+                            </div>
+                            <div class="rating">
+                                <i class="icon-9"></i>
+                                @if (Model.CommentCount > 0)
+                                {
+                                    @Model.AverageRating.ToString("0.0")
+                                    <text>/5 (@Model.CommentCount yorum)</text>
+                                }
+                                else
+                                {
+                                    <text>Henüz yorum yok</text>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- 8 Özellik Kutusu -->
+                        <div class="car-details-feature-list">
+                            <h3 class="car-details-title">@Model.Car.BrandName @Model.Car.Model</h3>
+                            <div class="row">
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-8"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Koltuk</h6>
+                                            <span>@Model.Car.SeatCount Kişi</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-29"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Bagaj</h6>
+                                            <span>@Model.Car.LuggageCapacity Bavul</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-6"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Yakıt Tipi</h6>
+                                            <span>@Model.Car.FuelType</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-30"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Vites</h6>
+                                            <span>@Model.Car.TransmissionType</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-28"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Kilometre</h6>
+                                            <span>@Model.Car.Mileage.ToString("N0") km</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-7"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Model Yılı</h6>
+                                            <span>@Model.Car.ModelYear</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-42"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Plaka</h6>
+                                            <span>@Model.Car.PlateNumber</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6">
+                                    <div class="car-details-feature-box">
+                                        <div class="car-details-feature-icon"><i class="icon-43"></i></div>
+                                        <div class="car-details-feature-content">
+                                            <h6>Marka</h6>
+                                            <span>@Model.Car.BrandName</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="car-details-about-box">
+                            <h4 class="car-details-sub-title">Bu Araç Hakkında</h4>
+                            <p class="car-details-about-text">
+                                @if (!string.IsNullOrWhiteSpace(Model.Car.Description))
+                                {
+                                    @Model.Car.Description
+                                }
+                                else
+                                {
+                                    <text>@Model.Car.BrandName @Model.Car.Model — @Model.Car.ModelYear model, @Model.Car.FuelType yakıt tipi ve @Model.Car.TransmissionType vites ile rahat ve konforlu bir sürüş deneyimi sunuyor. @Model.Car.SeatCount kişilik kapasitesi ve @Model.Car.LuggageCapacity bavul taşıma alanıyla aileler ve arkadaş grupları için idealdir.</text>
+                                }
+                            </p>
+                        </div>
+
+                        <!-- Dahil Olanlar / Olmayanlar -->
+                        <div class="car-details-included-excluded">
+                            <h4 class="car-details-sub-title">Dahil Olan & Olmayan</h4>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12">
+                                    <ul class="car-details-included-list">
+                                        <li><i class="icon-44"></i>Tam dolu yakıt deposu ile teslim</li>
+                                        <li><i class="icon-44"></i>Sınırsız kilometre</li>
+                                        <li><i class="icon-44"></i>Kasko sigortası dahil</li>
+                                        <li><i class="icon-44"></i>7/24 yol yardım</li>
+                                        <li><i class="icon-44"></i>Havalimanı teslim alma</li>
+                                    </ul>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12">
+                                    <ul class="car-details-excluded-list">
+                                        <li><i class="icon-45"></i>Yakıt ücreti (kullanım sonrası)</li>
+                                        <li><i class="icon-45"></i>Trafik cezaları</li>
+                                        <li><i class="icon-45"></i>İlave sürücü ücreti</li>
+                                        <li><i class="icon-45"></i>Ek ekipman (bebek koltuğu vs.)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="car-details-highlights">
+                            <h4 class="car-details-sub-title">Öne Çıkan Özellikler</h4>
+                            <ul class="car-details-top-highlights-list">
+                                <li><i class="fa-solid fa-circle-check"></i>Modern @Model.Car.ModelYear model konfor ve performans</li>
+                                <li><i class="fa-solid fa-circle-check"></i>@Model.Car.TransmissionType vites — kolay sürüş</li>
+                                <li><i class="fa-solid fa-circle-check"></i>@Model.Car.FuelType yakıt seçeneği</li>
+                                <li><i class="fa-solid fa-circle-check"></i>Tam sigortalı, bakımlı ve temiz</li>
+                                <li><i class="fa-solid fa-circle-check"></i>Rezervasyon onayı sonrası anında teslim</li>
+                            </ul>
+                        </div>
+
+                        @if (Model.Comments.Any())
+                        {
+                            <div class="comment-inner">
+                                <h4 class="car-details-sub-title">Müşteri Yorumları (@Model.CommentCount)</h4>
+
+                                @foreach (var comment in Model.Comments)
+                                {
+                                    <div class="comment-box">
+                                        <figure class="comment-thumb">
+                                            <img src="@(string.IsNullOrEmpty(comment.UserImage) ? "/site-assets/images/resource/comment-1.png" : comment.UserImage)"
+                                                 alt="@comment.UserName"
+                                                 onerror="this.src='/site-assets/images/resource/comment-1.png'">
+                                        </figure>
+                                        <div class="comment-details">
+                                            <h6>@comment.UserName</h6>
+                                            <span class="post-date">@comment.CreatedDate.ToString("dd MMMM yyyy")</span>
+                                            <p>@comment.CommentText</p>
+
+                                            <div class="rating-box">
+                                                <div class="rating services-rating">
+                                                    <span>Puan: </span>
+                                                    <ul>
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            <li class="@(i <= comment.Rating ? "rated-star" : "")">
+                                                                <i class="icon-9"></i>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="comment-inner">
+                                <h4 class="car-details-sub-title">Müşteri Yorumları</h4>
+                                <div class="alert alert-light text-center py-4 mt-3">
+                                    <i class="far fa-comment-dots fa-2x text-muted mb-3"></i>
+                                    <p class="text-muted mb-0">Bu araç için henüz yorum yapılmamış.</p>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+                    <div class="car-details-right-sidebar" style="position:sticky;top:20px">
+
+                        <h4 class="car-details-sub-title">Bu Aracı Kirala</h4>
+
+                        <div class="text-center py-4 mb-3"
+                             style="background:linear-gradient(135deg,#ff3838,#cc0000);color:#fff;border-radius:12px">
+                            <div style="font-size:13px;opacity:.9">Günlük Fiyat</div>
+                            <div style="font-size:38px;font-weight:700;line-height:1">
+                                @Model.Car.DailyPrice.ToString("N0") ₺
+                            </div>
+                            <div style="font-size:13px;opacity:.9">vergiler dahil</div>
+                        </div>
+
+                        <form asp-controller="Booking" asp-action="Index" method="get">
+                            <input type="hidden" name="carId" value="@Model.Car.CarId" />
+
+                            <div class="select-date-box mb-3">
+                                <label class="form-label small text-muted">Alış Tarihi</label>
+                                <input type="date" name="pickupDate" class="form-control"
+                                       value="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                       min="@DateTime.Today.ToString("yyyy-MM-dd")" required>
+                            </div>
+
+                            <div class="select-time-box mb-3">
+                                <label class="form-label small text-muted">İade Tarihi</label>
+                                <input type="date" name="returnDate" class="form-control"
+                                       value="@DateTime.Today.AddDays(3).ToString("yyyy-MM-dd")"
+                                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required>
+                            </div>
+
+                            <div class="select-delivery-box mb-3">
+                                <label class="form-label small text-muted">Alış Lokasyonu</label>
+                                <select name="pickupLocationId" class="form-control" required>
+                                    <option value="">-- Lokasyon Seçin --</option>
+                                    @foreach (var loc in Model.Locations)
+                                    {
+                                        <option value="@loc.LocationId">@loc.LocationName (@loc.City)</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- İade Lokasyonu -->
+                            <div class="select-delivery-box mb-4">
+                                <label class="form-label small text-muted">İade Lokasyonu</label>
+                                <select name="returnLocationId" class="form-control" required>
+                                    <option value="">-- Lokasyon Seçin --</option>
+                                    @foreach (var loc in Model.Locations)
+                                    {
+                                        <option value="@loc.LocationId">@loc.LocationName (@loc.City)</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <ul class="price-list mb-4">
+                                <li class="adult-box">
+                                    <h6><i class="fas fa-check text-success me-1"></i> Sigorta Dahil</h6>
+                                    <span class="text-muted small">Ücretsiz</span>
+                                </li>
+                                <li class="youth-box">
+                                    <h6><i class="fas fa-check text-success me-1"></i> 7/24 Yol Yardım</h6>
+                                    <span class="text-muted small">Ücretsiz</span>
+                                </li>
+                                <li class="children">
+                                    <h6><i class="fas fa-check text-success me-1"></i> Sınırsız KM</h6>
+                                    <span class="text-muted small">Ücretsiz</span>
+                                </li>
+                            </ul>
+
+                            <div class="link-btn">
+                                <button type="submit" class="btn-style-four w-100">
+                                    <i class="fas fa-key"></i> Hemen Kirala
+                                </button>
+                            </div>
+                        </form>
+
+                        <p class="text-center text-muted small mt-3 mb-0">
+                            <i class="fas fa-shield-alt"></i> Güvenli rezervasyon
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.RelatedCars.Any())
+        {
+            <div class="related-cars mt-5 pt-5 border-top">
+                <h3 class="mb-4">Benzer Araçlar (@Model.Car.CategoryName)</h3>
+                <div class="row">
+                    @foreach (var related in Model.RelatedCars)
+                    {
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                            @await Html.PartialAsync("_CarCard", related)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
     </div>
 </section>

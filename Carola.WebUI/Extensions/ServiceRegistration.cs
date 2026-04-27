@@ -74,6 +74,11 @@ namespace Carola.WebUI.Extensions
             // Customer
             services.AddScoped<ICustomerDal, EfCustomerDal>();
             services.AddScoped<ICustomerService, CustomerManager>();
+            
+            services.AddHttpClient<IOcrService, GeminiOcrService>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(60); 
+            });
 
             return services;
         }
