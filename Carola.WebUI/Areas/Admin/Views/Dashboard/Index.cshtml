@@ -1,82 +1,644 @@
 @model Carola.WebUI.Areas.Admin.Models.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="row g-4 mb-4">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon primary"><i class="bi bi-car-front"></i></div>
-            <div class="stat-card-value">@Model.TotalCars</div>
-            <div class="stat-card-label">Toplam Araç</div>
+<style>
+    .dash-section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        margin: 32px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .panel {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        height: 100%;
+    }
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+    .panel-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #0f172a;
+        margin: 0;
+    }
+    .panel-sub {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 2px;
+    }
+    .panel-meta {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .chart-wrap { position: relative; height: 280px; }
+    .chart-wrap-sm { position: relative; height: 220px; }
+
+    /* Tablo */
+    .dash-table { width: 100%; font-size: 13px; }
+    .dash-table th {
+        text-align: left;
+        font-weight: 600;
+        color: #64748b;
+        padding: 10px 8px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+    .dash-table td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+    }
+    .dash-table tr:last-child td { border-bottom: none; }
+
+    /* Status pill */
+    .status-pill {
+        display: inline-block;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 4px;
+    }
+    .status-1 { background: #fef3c7; color: #92400e; } /* Pending */
+    .status-2 { background: #d1fae5; color: #065f46; } /* Approved */
+    .status-3 { background: #fee2e2; color: #991b1b; } /* Rejected */
+    .status-4 { background: #e2e8f0; color: #475569; } /* Cancelled */
+    .status-5 { background: #dbeafe; color: #1e40af; } /* Completed */
+
+    /* Yorum cards */
+    .comment-row {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .comment-row:last-child { border-bottom: none; }
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+    .comment-body { flex: 1; min-width: 0; }
+    .comment-name { font-size: 13px; font-weight: 600; color: #0f172a; }
+    .comment-meta { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+    .comment-text { font-size: 13px; color: #475569; line-height: 1.5; }
+    .comment-stars { color: #f59e0b; font-size: 11px; }
+</style>
+
+
+<!-- ===================================================== -->
+<!--    MEVCUT 8 STAT KARTI — Senin layout'undan koruduk   -->
+<!-- ===================================================== -->
+<div class="row g-3">
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div class="stat-mini-icon ic-blue" style="width:40px;height:40px;border-radius:8px;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-car"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.TotalCars</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Toplam Araç</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#d1fae5;color:#065f46;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-calendar-check"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.TotalReservations</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Toplam Rezervasyon</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-clock"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.PendingReservations</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Onay Bekleyen</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#fee2e2;color:#991b1b;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-envelope"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.UnreadMessages</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Okunmamış Mesaj</div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon success"><i class="bi bi-calendar-check"></i></div>
-            <div class="stat-card-value">@Model.TotalReservations</div>
-            <div class="stat-card-label">Toplam Rezervasyon</div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-tag"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.TotalBrands</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Marka</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#cffafe;color:#0891b2;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-th-large"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.TotalCategories</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Kategori</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#fce7f3;color:#db2777;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-map-marker-alt"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.TotalLocations</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Lokasyon</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="panel">
+            <div style="width:40px;height:40px;border-radius:8px;background:#e2e8f0;color:#475569;display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-users"></i></div>
+            <h3 style="font-size:24px;font-weight:700;color:#0f172a;margin:0">@Model.TotalCustomers</h3>
+            <div style="font-size:13px;color:#64748b;margin-top:4px">Müşteri</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ===================================================== -->
+<!--    DETAYLI ANALİZ — GENEL                             -->
+<!-- ===================================================== -->
+<div class="dash-section-title">Genel Bakış</div>
+
+<div class="row g-3">
+
+    <!-- Toplam Ciro -->
+    <div class="col-md-4">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Toplam Ciro</div>
+                    <div class="panel-sub">Onaylı + Tamamlanmış</div>
+                </div>
+            </div>
+            <div style="font-size:30px;font-weight:700;color:#0f172a">
+                @Model.TotalRevenue.ToString("N0") <span style="font-size:16px;color:#64748b">₺</span>
+            </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon warning"><i class="bi bi-clock-history"></i></div>
-            <div class="stat-card-value">@Model.PendingReservations</div>
-            <div class="stat-card-label">Onay Bekleyen</div>
+    <!-- Bu Ay Ciro -->
+    <div class="col-md-4">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Bu Ayın Cirosu</div>
+                    <div class="panel-sub">@DateTime.Now.ToString("MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</div>
+                </div>
+            </div>
+            <div style="font-size:30px;font-weight:700;color:#0f172a">
+                @Model.MonthRevenue.ToString("N0") <span style="font-size:16px;color:#64748b">₺</span>
+            </div>
+            @if (Model.MonthGrowthPercent != 0)
+            {
+                var sign = Model.MonthGrowthPercent >= 0 ? "+" : "";
+                var color = Model.MonthGrowthPercent >= 0 ? "#16a34a" : "#dc2626";
+                <div style="margin-top:6px;font-size:12px;color:@color">
+                    @sign@Model.MonthGrowthPercent.ToString("F1")% geçen aya kıyasla
+                </div>
+            }
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon danger"><i class="bi bi-envelope-exclamation"></i></div>
-            <div class="stat-card-value">@Model.UnreadMessages</div>
-            <div class="stat-card-label">Okunmamış Mesaj</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon info"><i class="bi bi-tag"></i></div>
-            <div class="stat-card-value">@Model.TotalBrands</div>
-            <div class="stat-card-label">Marka</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon info"><i class="bi bi-grid"></i></div>
-            <div class="stat-card-value">@Model.TotalCategories</div>
-            <div class="stat-card-label">Kategori</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon info"><i class="bi bi-geo-alt"></i></div>
-            <div class="stat-card-value">@Model.TotalLocations</div>
-            <div class="stat-card-label">Lokasyon</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-card-icon primary"><i class="bi bi-people"></i></div>
-            <div class="stat-card-value">@Model.TotalCustomers</div>
-            <div class="stat-card-label">Müşteri</div>
+    <!-- Ortalama Puan -->
+    <div class="col-md-4">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Ortalama Müşteri Puanı</div>
+                    <div class="panel-sub">@Model.TotalComments yorum üzerinden</div>
+                </div>
+            </div>
+            <div style="font-size:30px;font-weight:700;color:#0f172a">
+                @Model.AverageRating.ToString("F2")
+                <span style="color:#f59e0b;font-size:18px;margin-left:4px">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Round(Model.AverageRating))
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                        else
+                        {
+                            <i class="far fa-star" style="color:#cbd5e1"></i>
+                        }
+                    }
+                </span>
+            </div>
         </div>
     </div>
 
 </div>
 
-<div class="data-card">
-    <div class="data-card-header">
-        <h5 class="data-card-title">Hoş Geldiniz</h5>
+
+<!-- ===================================================== -->
+<!--    GRAFIK 1 — Aylık Gelir + Rezervasyon Durumu        -->
+<!-- ===================================================== -->
+<div class="dash-section-title">Gelir & Rezervasyon Analizi</div>
+
+<div class="row g-3">
+
+    <div class="col-lg-8">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Aylık Gelir Trendi</div>
+                    <div class="panel-sub">Son 6 ayın ciro grafiği</div>
+                </div>
+                <div class="panel-meta">
+                    Toplam: <strong>@Model.MonthlyRevenue.Sum(m => m.Revenue).ToString("N0") ₺</strong>
+                </div>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="monthlyRevenueChart"></canvas>
+            </div>
+        </div>
     </div>
-    <div class="p-4">
-        <p class="mb-2">Carola Admin paneline hoş geldiniz, <strong>@User.Identity?.Name</strong> 👋</p>
-        <p class="text-muted small mb-0">Sol menüden istediğiniz yönetim ekranına erişebilirsiniz.</p>
+
+    <div class="col-lg-4">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Rezervasyon Durumu</div>
+                    <div class="panel-sub">Toplam dağılım</div>
+                </div>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="statusDonutChart"></canvas>
+            </div>
+        </div>
     </div>
+
 </div>
+
+
+<!-- ===================================================== -->
+<!--    GRAFIK 2 — Top 5 Araç + Top Şehirler                -->
+<!-- ===================================================== -->
+<div class="dash-section-title">Performans Analizi</div>
+
+<div class="row g-3">
+
+    <!-- Top 5 Araç (TABLO formatında - daha pro) -->
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">En Çok Kiralanan 5 Araç</div>
+                    <div class="panel-sub">Rezervasyon sayısına göre</div>
+                </div>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Araç</th>
+                        <th style="text-align:center">Kiralama</th>
+                        <th style="text-align:right">Ciro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var car in Model.TopCars)
+                    {
+                        <tr>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <img src="@car.ImageUrl" alt=""
+                                         onerror="this.src='/site-assets/images/featured-car/featured-car-19.jpg'"
+                                         style="width:40px;height:30px;object-fit:cover;border-radius:4px">
+                                    <span style="font-weight:500">@car.CarName</span>
+                                </div>
+                            </td>
+                            <td style="text-align:center;font-weight:600">@car.RentCount</td>
+                            <td style="text-align:right;color:#64748b">@car.Revenue.ToString("N0") ₺</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Şehirler -->
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Top Şehirler</div>
+                    <div class="panel-sub">En çok rezervasyon alan lokasyonlar</div>
+                </div>
+            </div>
+            <div class="chart-wrap-sm">
+                <canvas id="topCitiesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!--    GRAFIK 3 — Marka + Kategori Dağılımı               -->
+<!-- ===================================================== -->
+<div class="dash-section-title">Filo Analizi</div>
+
+<div class="row g-3">
+
+    <!-- Marka Dağılımı -->
+    <div class="col-lg-7">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Marka Bazında Araç Dağılımı</div>
+                    <div class="panel-sub">Filodaki araç sayısına göre</div>
+                </div>
+            </div>
+            <div class="chart-wrap-sm">
+                <canvas id="brandStatsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kategori -->
+    <div class="col-lg-5">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Kategori Dağılımı</div>
+                    <div class="panel-sub">Araç tiplerinin oranı</div>
+                </div>
+            </div>
+            <div class="chart-wrap-sm">
+                <canvas id="categoryStatsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!--    SON 10 REZERVASYON + SON 5 YORUM                   -->
+<!-- ===================================================== -->
+<div class="dash-section-title">Son Aktiviteler</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-lg-7">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Son 10 Rezervasyon</div>
+                    <div class="panel-sub">Yeni gelen rezervasyon talepleri</div>
+                </div>
+                <a asp-area="Admin" asp-controller="Reservation" asp-action="Index"
+                   class="panel-meta" style="text-decoration:none">Tümünü Gör →</a>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Müşteri</th>
+                        <th>Araç</th>
+                        <th>Tarih</th>
+                        <th style="text-align:right">Tutar</th>
+                        <th style="text-align:center">Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.RecentReservations)
+                    {
+                        <tr>
+                            <td><span style="font-weight:500">@r.CustomerName</span></td>
+                            <td>@r.CarName</td>
+                            <td style="font-size:12px;color:#64748b">@r.PickupDate.ToString("dd.MM.yyyy")</td>
+                            <td style="text-align:right;font-weight:500">@r.TotalPrice.ToString("N0") ₺</td>
+                            <td style="text-align:center">
+                                <span class="status-pill status-@r.Status">
+                                    @switch (r.Status)
+                                    {
+                                        case 1: <text>Bekleyen</text>; break;
+                                        case 2: <text>Onaylı</text>; break;
+                                        case 3: <text>Reddedildi</text>; break;
+                                        case 4: <text>İptal</text>; break;
+                                        case 5: <text>Tamamlandı</text>; break;
+                                    }
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Son Müşteri Yorumları</div>
+                    <div class="panel-sub">En yeni 5 değerlendirme</div>
+                </div>
+                <a asp-area="Admin" asp-controller="Comment" asp-action="Index"
+                   class="panel-meta" style="text-decoration:none">Tümünü Gör →</a>
+            </div>
+            @foreach (var c in Model.RecentComments)
+            {
+                <div class="comment-row">
+                    <img src="@(string.IsNullOrEmpty(c.UserImage) ? "https://randomuser.me/api/portraits/lego/1.jpg" : c.UserImage)"
+                         class="comment-avatar"
+                         onerror="this.src='https://randomuser.me/api/portraits/lego/1.jpg'" />
+                    <div class="comment-body">
+                        <div class="comment-name">@c.UserName</div>
+                        <div class="comment-meta">
+                            @c.CarName · @c.CreatedDate.ToString("dd.MM.yyyy")
+                            <span class="comment-stars ms-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= c.Rating) { <i class="fas fa-star"></i> }
+                                    else { <i class="far fa-star" style="color:#cbd5e1"></i> }
+                                }
+                            </span>
+                        </div>
+                        <div class="comment-text">@c.CommentText</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ============== SCRIPTS ============== -->
+<script>
+    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+    Chart.defaults.color = '#64748b';
+
+    // Aylık gelir
+    new Chart(document.getElementById('monthlyRevenueChart'), {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenue.Select(m => m.MonthLabel))),
+            datasets: [{
+                label: 'Ciro (₺)',
+                data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenue.Select(m => m.Revenue))),
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                fill: true,
+                tension: 0.3,
+                borderWidth: 2,
+                pointBackgroundColor: '#3b82f6',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#0f172a',
+                    padding: 10,
+                    cornerRadius: 6,
+                    callbacks: {
+                        label: ctx => ctx.parsed.y.toLocaleString('tr-TR') + ' ₺'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f1f5f9' },
+                    ticks: { callback: v => (v/1000).toFixed(0) + 'K' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Status donut
+    new Chart(document.getElementById('statusDonutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Bekleyen', 'Onaylı', 'Tamamlandı', 'Reddedildi', 'İptal'],
+            datasets: [{
+                data: [
+                    @Model.StatusBreakdown.Pending,
+                    @Model.StatusBreakdown.Approved,
+                    @Model.StatusBreakdown.Completed,
+                    @Model.StatusBreakdown.Rejected,
+                    @Model.StatusBreakdown.Cancelled
+                ],
+                backgroundColor: ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#94a3b8'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 12, font: { size: 11 }, usePointStyle: true, pointStyle: 'circle', boxWidth: 8 }
+                },
+                tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6 }
+            }
+        }
+    });
+
+    // Top şehirler
+    new Chart(document.getElementById('topCitiesChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCities.Select(c => c.City))),
+            datasets: [{
+                label: 'Rezervasyon',
+                data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCities.Select(c => c.ReservationCount))),
+                backgroundColor: '#3b82f6',
+                borderRadius: 4,
+                barThickness: 24
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6 }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 5 } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Marka dağılımı
+    new Chart(document.getElementById('brandStatsChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BrandStats.Select(b => b.BrandName))),
+            datasets: [{
+                label: 'Araç Sayısı',
+                data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BrandStats.Select(b => b.CarCount))),
+                backgroundColor: '#10b981',
+                borderRadius: 4,
+                barThickness: 20
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6 }
+            },
+            scales: {
+                x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Kategori pie
+    new Chart(document.getElementById('categoryStatsChart'), {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryStats.Select(c => c.CategoryName))),
+            datasets: [{
+                data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryStats.Select(c => c.CarCount))),
+                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6', '#f97316', '#84cc16'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { padding: 8, font: { size: 11 }, boxWidth: 10 }
+                },
+                tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6 }
+            }
+        }
+    });
+</script>
