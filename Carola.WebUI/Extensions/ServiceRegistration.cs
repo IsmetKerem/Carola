@@ -83,6 +83,10 @@ namespace Carola.WebUI.Extensions
             // Mail Service
             services.AddScoped<IMailService, SmtpMailService>();
             services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+            services.AddHttpClient<IChatService, GeminiChatService>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(60);
+            });
 
             return services;
         }

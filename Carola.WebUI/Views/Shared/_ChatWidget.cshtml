@@ -1,0 +1,540 @@
+<!-- ============================================== -->
+<!--    CAROLA AI CHAT WIDGET (Floating, sağ alt)   -->
+<!-- ============================================== -->
+
+<style>
+    /* === Floating Button === */
+    .chat-toggle-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff3838 0%, #cc0000 100%);
+        color: #fff;
+        border: none;
+        box-shadow: 0 8px 24px rgba(255, 56, 56, 0.4);
+        cursor: pointer;
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        transition: all .3s;
+        animation: pulseChat 2s infinite;
+    }
+    .chat-toggle-btn:hover {
+        transform: scale(1.08);
+        box-shadow: 0 12px 32px rgba(255, 56, 56, 0.55);
+    }
+    .chat-toggle-btn.open { animation: none; }
+
+    @@keyframes pulseChat {
+        0%   { box-shadow: 0 8px 24px rgba(255, 56, 56, 0.4), 0 0 0 0 rgba(255,56,56,0.5); }
+        70%  { box-shadow: 0 8px 24px rgba(255, 56, 56, 0.4), 0 0 0 18px rgba(255,56,56,0); }
+        100% { box-shadow: 0 8px 24px rgba(255, 56, 56, 0.4), 0 0 0 0 rgba(255,56,56,0); }
+    }
+
+    .chat-toggle-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #fff;
+        color: #ff3838;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 10px;
+        border: 2px solid #ff3838;
+    }
+
+    /* === Chat Window === */
+    .chat-window {
+        position: fixed;
+        bottom: 110px;
+        right: 30px;
+        width: 400px;
+        max-width: calc(100vw - 40px);
+        height: 600px;
+        max-height: calc(100vh - 140px);
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+    .chat-window.open {
+        display: flex;
+        animation: slideUp .3s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Header === */
+    .chat-header {
+        background: linear-gradient(135deg, #ff3838 0%, #cc0000 100%);
+        color: #fff;
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .chat-header-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+    .chat-header-info { flex: 1; }
+    .chat-header-info h6 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 15px;
+    }
+    .chat-header-info small {
+        opacity: .9;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .chat-header-info small::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #4ade80;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .chat-close-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: #fff;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    /* === Messages Area === */
+    .chat-body {
+        flex: 1;
+        padding: 18px;
+        overflow-y: auto;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .chat-body::-webkit-scrollbar { width: 6px; }
+    .chat-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    /* Mesaj baloncukları */
+    .msg {
+        max-width: 85%;
+        padding: 10px 14px;
+        font-size: 13px;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+    .msg-bot {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px 14px 14px 4px;
+        align-self: flex-start;
+        color: #334155;
+    }
+    .msg-user {
+        background: linear-gradient(135deg, #ff3838 0%, #cc0000 100%);
+        color: #fff;
+        border-radius: 14px 14px 4px 14px;
+        align-self: flex-end;
+    }
+
+    /* Typing indicator */
+    .msg-typing {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 12px 16px;
+        align-self: flex-start;
+        display: inline-flex;
+        gap: 4px;
+    }
+    .msg-typing span {
+        width: 7px;
+        height: 7px;
+        background: #94a3b8;
+        border-radius: 50%;
+        animation: typingDot 1.4s infinite;
+    }
+    .msg-typing span:nth-child(2) { animation-delay: .2s; }
+    .msg-typing span:nth-child(3) { animation-delay: .4s; }
+
+    @@keyframes typingDot {
+        0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+        30%           { opacity: 1; transform: translateY(-4px); }
+    }
+
+    /* Önerilen araç kartı */
+    .car-rec {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: 85%;
+        align-self: flex-start;
+        text-decoration: none;
+        color: inherit;
+        transition: all .2s;
+        display: block;
+    }
+    .car-rec:hover {
+        border-color: #ff3838;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        color: inherit;
+        text-decoration: none;
+    }
+    .car-rec-img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        background: #f1f5f9;
+    }
+    .car-rec-body { padding: 12px; }
+    .car-rec-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 4px;
+    }
+    .car-rec-meta {
+        font-size: 11px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+    .car-rec-reason {
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.4;
+        padding: 8px 10px;
+        background: #fef2f2;
+        border-left: 3px solid #ff3838;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+    .car-rec-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .car-rec-price {
+        font-size: 15px;
+        font-weight: 700;
+        color: #ff3838;
+    }
+    .car-rec-cta {
+        font-size: 11px;
+        color: #ff3838;
+        font-weight: 600;
+        background: #fef2f2;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    /* Quick suggestion chips (welcome screen) */
+    .chat-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+        align-self: flex-start;
+        max-width: 85%;
+    }
+    .chat-suggestion {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 6px 12px;
+        font-size: 12px;
+        color: #475569;
+        cursor: pointer;
+        transition: all .2s;
+    }
+    .chat-suggestion:hover {
+        border-color: #ff3838;
+        color: #ff3838;
+        background: #fef2f2;
+    }
+
+    /* Input area */
+    .chat-footer {
+        border-top: 1px solid #e2e8f0;
+        padding: 14px 16px;
+        background: #fff;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .chat-input {
+        flex: 1;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 10px 16px;
+        font-size: 13px;
+        outline: none;
+        background: #f8fafc;
+        font-family: inherit;
+    }
+    .chat-input:focus {
+        border-color: #ff3838;
+        background: #fff;
+    }
+    .chat-send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff3838 0%, #cc0000 100%);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+    .chat-send-btn:disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+    }
+
+    .chat-footer-hint {
+        text-align: center;
+        font-size: 10px;
+        color: #94a3b8;
+        padding: 6px 16px 10px;
+        background: #fff;
+    }
+
+    /* Mobile */
+    @@media (max-width: 480px) {
+        .chat-window {
+            right: 10px;
+            left: 10px;
+            width: auto;
+            bottom: 90px;
+        }
+        .chat-toggle-btn {
+            right: 16px;
+            bottom: 16px;
+            width: 56px;
+            height: 56px;
+        }
+    }
+</style>
+
+
+<!-- Toggle Button -->
+<button id="chat-toggle" class="chat-toggle-btn" onclick="toggleChat()">
+    <i class="fas fa-comment-dots"></i>
+    <span class="chat-toggle-badge">AI</span>
+</button>
+
+
+<!-- Chat Window -->
+<div id="chat-window" class="chat-window">
+
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="chat-header-avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="chat-header-info">
+            <h6>Carola Asistan</h6>
+            <small>Çevrimiçi · Yapay Zeka Destekli</small>
+        </div>
+        <button class="chat-close-btn" onclick="toggleChat()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Body -->
+    <div id="chat-body" class="chat-body">
+        <!-- Welcome message -->
+        <div class="msg msg-bot">
+            👋 Merhaba! Ben <strong>Carola Asistan</strong>. Size en uygun aracı bulmama yardımcı olabilirim. <br/><br/>
+            <span style="color:#64748b;font-size:12px">Bütçenizi, koltuk ihtiyacınızı, yakıt türü tercihinizi yazabilirsiniz.</span>
+        </div>
+
+        <div class="chat-suggestions">
+            <button class="chat-suggestion" onclick="askSuggestion('Aile için 7 koltuklu bir SUV önerir misin?')">👨‍👩‍👧 Aile için SUV</button>
+            <button class="chat-suggestion" onclick="askSuggestion('Yakıt tasarruflu bir araç istiyorum')">⛽ Ekonomik araç</button>
+            <button class="chat-suggestion" onclick="askSuggestion('Elektrikli araçlarınız var mı?')">⚡ Elektrikli</button>
+            <button class="chat-suggestion" onclick="askSuggestion('İş seyahati için lüks sedan önerir misin?')">💼 Lüks sedan</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="chat-footer">
+        <input type="text" id="chat-input" class="chat-input"
+               placeholder="Mesajınızı yazın..." maxlength="500"
+               onkeypress="if(event.key==='Enter') sendChat()" />
+        <button id="chat-send" class="chat-send-btn" onclick="sendChat()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <div class="chat-footer-hint">
+        Powered by Gemini AI · Sadece araç önerisi
+    </div>
+
+</div>
+
+
+<script>
+    let chatBusy = false;
+
+    function toggleChat() {
+        const win = document.getElementById('chat-window');
+        const btn = document.getElementById('chat-toggle');
+        win.classList.toggle('open');
+        btn.classList.toggle('open');
+    }
+
+    function askSuggestion(text) {
+        document.getElementById('chat-input').value = text;
+        sendChat();
+    }
+
+    async function sendChat() {
+        if (chatBusy) return;
+
+        const input = document.getElementById('chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        chatBusy = true;
+        document.getElementById('chat-send').disabled = true;
+
+        // 1. Suggestion chip'leri kaldır (varsa)
+        const suggestions = document.querySelector('.chat-suggestions');
+        if (suggestions) suggestions.remove();
+
+        // 2. Kullanıcı mesajını ekle
+        addMessage(msg, 'user');
+        input.value = '';
+
+        // 3. Typing indicator ekle
+        const typingId = addTyping();
+
+        // 4. AJAX
+        try {
+            const response = await fetch('/Chat/Recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+
+            const data = await response.json();
+
+            // Typing'i kaldır
+            document.getElementById(typingId)?.remove();
+
+            if (!data.success) {
+                addMessage('⚠️ ' + (data.errorMessage || 'Bir hata oluştu, tekrar dener misiniz?'), 'bot');
+                return;
+            }
+
+            // 5. AI metnini ekle
+            addMessage(data.replyText, 'bot');
+
+            // 6. Önerilen araçları ekle
+            if (data.recommendedCars && data.recommendedCars.length > 0) {
+                data.recommendedCars.forEach(car => addCarRec(car));
+            }
+        } catch (err) {
+            console.error('Chat hatası:', err);
+            document.getElementById(typingId)?.remove();
+            addMessage('⚠️ Bağlantı hatası. Lütfen tekrar deneyin.', 'bot');
+        } finally {
+            chatBusy = false;
+            document.getElementById('chat-send').disabled = false;
+            scrollChatToBottom();
+        }
+    }
+
+    function addMessage(text, sender) {
+        const body = document.getElementById('chat-body');
+        const div = document.createElement('div');
+        div.className = 'msg msg-' + sender;
+        div.innerHTML = escapeHtml(text).replace(/\n/g, '<br/>');
+        body.appendChild(div);
+        scrollChatToBottom();
+    }
+
+    function addTyping() {
+        const body = document.getElementById('chat-body');
+        const id = 'typing-' + Date.now();
+        const div = document.createElement('div');
+        div.className = 'msg-typing';
+        div.id = id;
+        div.innerHTML = '<span></span><span></span><span></span>';
+        body.appendChild(div);
+        scrollChatToBottom();
+        return id;
+    }
+
+    function addCarRec(car) {
+        const body = document.getElementById('chat-body');
+        const a = document.createElement('a');
+        a.className = 'car-rec';
+        a.href = '/Cars/Detail/' + car.carId;
+        a.innerHTML = `
+            <img class="car-rec-img" src="${escapeHtml(car.imageUrl)}"
+                 onerror="this.src='/site-assets/images/featured-car/featured-car-19.jpg'" />
+            <div class="car-rec-body">
+                <h6 class="car-rec-title">${escapeHtml(car.brandName)} ${escapeHtml(car.model)}</h6>
+                <div class="car-rec-meta">
+                    <i class="fas fa-tag"></i> ${escapeHtml(car.categoryName)} ·
+                    <i class="fas fa-gas-pump"></i> ${escapeHtml(car.fuelType)} ·
+                    <i class="fas fa-cog"></i> ${escapeHtml(car.transmissionType)} ·
+                    <i class="fas fa-users"></i> ${car.seatCount} kişi
+                </div>
+                <div class="car-rec-reason">
+                    <i class="fas fa-lightbulb" style="color:#ff3838"></i> ${escapeHtml(car.reason)}
+                </div>
+                <div class="car-rec-footer">
+                    <span class="car-rec-price">${car.dailyPrice.toLocaleString('tr-TR')} ₺<small style="font-size:10px;color:#94a3b8;font-weight:400">/gün</small></span>
+                    <span class="car-rec-cta">Detayı Gör →</span>
+                </div>
+            </div>
+        `;
+        body.appendChild(a);
+        scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
+        const body = document.getElementById('chat-body');
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+</script>
